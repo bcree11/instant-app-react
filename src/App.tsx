@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Header from "./Components/Header/Header";
+import View from "./Components/View/View";
+import Modal from "./Components/Modal/Modal";
+
+import "./App.scss";
+import { ApplicationConfig } from "./ApplicationBase/interfaces";
+
+interface AppProps {
+  portal: __esri.Portal;
+  config: ApplicationConfig;
+  webmap: string;
+  setWebmap: any;
 }
 
-export default App;
+interface AppState {
+  webmap: string;
+}
+
+class App extends Component<AppProps, AppState> {
+  constructor(props: AppProps) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <Header />
+        <View />
+        <Modal />
+      </div>
+    );
+  }
+}
+
+function mapStateToProps(state: AppState): AppState {
+  return {
+    ...state
+  };
+}
+
+export default connect(mapStateToProps, null)(App);

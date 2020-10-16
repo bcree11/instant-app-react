@@ -1,0 +1,27 @@
+{
+  "appid": "",
+  "title": "",
+  "webmap": "default",
+  "portalUrl": "https://arcgis.com/",
+  "oauthappid": "",
+  "proxyUrl": "",
+  "units": "",
+  "googleAnalytics": false,
+  "googleAnalyticsKey": null,
+  "helperServices": {
+    "geometry": {
+      "url": null
+    },
+    "printTask": {
+      "url": null
+    },
+    "elevationSync": {
+      "url": null
+    },
+    "geocode": [
+      {
+        "url": null
+      }
+    ]
+  }
+}
