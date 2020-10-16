@@ -25,7 +25,7 @@ class Modal extends Component<ModalProps, ModalState> {
           <ul>
             <li>React with TypeScript</li>
             <li>Redux</li>
-            <li>ArcGIS Core (ArcGIS API for JavaScript ES modules)</li>
+            <li>ArcGIS Core (ArcGIS API for JavaScript ESM modules)</li>
             <li>
               Calcite Components (Shared Web Components for Esri's Calcite
               design framework)
