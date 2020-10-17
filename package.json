@@ -16,9 +16,10 @@
     "redux": "^4.0.5"
   },
   "scripts": {
-    "start": "npm run copy && react-scripts start",
-    "build": "npm run copy && react-scripts build",
+    "start": "npm run copy && npm run copyIcons && react-scripts start",
+    "build": "npm run copy && npm run copyIcons && react-scripts build",
     "copy": "ncp ./node_modules/@arcgis/core/assets ./public/assets",
+    "copyIcons": "cp node_modules/@esri/calcite-components/dist/calcite/assets/*.json ./public/assets",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "bundle:report": "source-map-explorer build/**/*.js",
