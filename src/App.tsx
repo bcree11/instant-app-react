@@ -20,10 +20,6 @@ interface AppState {
 }
 
 class App extends Component<AppProps, AppState> {
-  constructor(props: AppProps) {
-    super(props);
-  }
-
   render() {
     return (
       <div className="App">

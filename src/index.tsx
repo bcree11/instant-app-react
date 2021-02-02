@@ -30,15 +30,26 @@ import { createStore } from "redux";
 import reducer from "./reducers/reducer";
 
 import {
-  setPageLocale,
-  setPageDirection
-} from "./ApplicationBase/support/domHelper";
+  registerMessageBundleLoader,
+  createJSONLoader,
+  setLocale
+} from "@arcgis/core/intl";
 
 (async function init(): Promise<void> {
   const base = (await createApplicationBase().load()) as ApplicationBase;
 
-  setPageLocale(base.locale);
-  setPageDirection(base.direction);
+  registerMessageBundleLoader(
+    createJSONLoader({
+      pattern: `${process.env.PUBLIC_URL}/`,
+      base: `${process.env.PUBLIC_URL}`,
+      location: new URL(
+        `${process.env.PUBLIC_URL}/assets/`,
+        window.location.href
+      )
+    })
+  );
+
+  setLocale(base.locale);
 
   const store = createStore(reducer, {
     base,
