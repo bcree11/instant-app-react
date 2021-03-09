@@ -9,10 +9,10 @@ import "./App.scss";
 import { ApplicationConfig } from "./ApplicationBase/interfaces";
 
 interface AppProps {
-  portal: __esri.Portal;
-  config: ApplicationConfig;
-  webmap: string;
-  setWebmap: any;
+  portal?: __esri.Portal;
+  config?: ApplicationConfig;
+  webmap?: string;
+  setWebmap?: any;
 }
 
 interface AppState {

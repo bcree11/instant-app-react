@@ -27,7 +27,7 @@ import * as serviceWorker from "./serviceWorker";
 // Redux
 import { Provider } from "react-redux";
 import { createStore } from "redux";
-import reducer from "./reducers/reducer";
+import {rootReducer, RootState} from "./redux/reducers";
 
 import {
   registerMessageBundleLoader,
@@ -51,10 +51,19 @@ import {
 
   setLocale(base.locale);
 
-  const store = createStore(reducer, {
-    base,
-    config: base.config
-  });
+  const config = (window.location !== window.parent.location
+    ? { ...base.config, ...base.config.draft }
+    : { ...base.config }) as typeof applicationJSON;
+
+    const initialState = {
+      base,
+      header: {
+        header: config.header,
+        title: config.title
+      },
+    } as RootState;
+
+  const store = createStore(rootReducer, initialState, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
 
   await applyPolyfills();
   defineCustomElements(window);
