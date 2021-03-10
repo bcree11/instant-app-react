@@ -35,7 +35,7 @@ export const UPDATE_MINIMIZED_SECTION_DISPLAY = "UPDATE_MINIMIZED_SECTION_DISPLA
 export const STORE_PORTAL = "STORE_PORTAL";
 export const UPDATE_MAP_LOCATION_EXTENT = "UPDATE_MAP_LOCATION_EXTENT";
 export const UPDATE_LOCATION_PANEL = "UPDATE_LOCATION_PANEL";
-export const UPDATE_SHARE_THEME = "UPDATE_SHARE_THEME"
+export const UPDATE_SHARE_THEME = "UPDATE_SHARE_THEME";
 
 export interface Description_t9n {
   toggleDescription: string;
@@ -73,6 +73,49 @@ export interface IThemeReducer {
   theme: "light" | "dark";
   applySharedTheme: boolean;
 }
+
+// Splash
+
+export interface SplashState {
+  splash: boolean;
+  splashOnStart: boolean;
+  splashTitle: string;
+  splashContent: string;
+  splashButtonText: string;
+}
+
+export interface ToggleInfoAction {
+  type: typeof TOGGLE_INFO;
+  payload: boolean;
+}
+
+export interface OpenInfoPanelAction {
+  type: typeof SPLASH_ON_START;
+  payload: boolean;
+}
+
+export interface UpdateSplashTitleAction {
+  type: typeof UPDATE_SPLASH_TITLE;
+  payload: string;
+}
+
+export interface UpdateSplashContentAction {
+  type: typeof UPDATE_SPLASH_CONTENT;
+  payload: string;
+}
+
+export interface UpdateSplashButtonTextAction {
+  type: typeof UPDATE_SPLASH_BUTTON_TEXT;
+  payload: string;
+}
+
+export type SplashActionTypes =
+  | ToggleInfoAction
+  | OpenInfoPanelAction
+  | UpdateSplashTitleAction
+  | UpdateSplashContentAction
+  | UpdateSplashButtonTextAction
+  | UpdateSplashContentAction;
 
 export interface IItemCollectionReducer {
   itemCollection: Item[];
@@ -123,14 +166,6 @@ export interface IPortalReducer {
 export interface INavigationReducer {
   navigationBarOpenAtStart: boolean;
   navDescriptionIsOpen: boolean;
-}
-
-export interface ISplashReducer {
-  splash: boolean;
-  splashOnStart: boolean;
-  splashTitle: string;
-  splashContent: string;
-  splashButtonText: string;
 }
 
 export interface IDescriptionReducer {

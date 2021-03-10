@@ -61,6 +61,54 @@ import {
         header: config.header,
         title: config.title
       },
+      splash: {
+        splash: config.splash,
+        splashTitle: config.splashTitle,
+        splashContent: config.splashContent,
+        splashButtonText: config.splashButtonText,
+        splashOnStart: config.splashOnStart
+      },
+      // themeReducer: {
+      //   theme: config.theme,
+      //   applySharedTheme: config.applySharedTheme
+      // },
+      // itemCollectionReducer: {
+      //   itemCollection: config.itemCollection
+      // },
+      // widgetReducer: {
+      //   home: config.home,
+      //   mapZoom: config.mapZoom,
+      //   search: config.search,
+      //   layerList: config.layerList,
+      //   legend: config.legend,
+      //   print: config.print,
+      //   basemapToggle: config.basemapToggle
+      // },
+      // widgetPositionReducer: {
+      //   homePosition: config.homePosition,
+      //   mapZoomPosition: config.mapZoomPosition,
+      //   searchPosition: config.searchPosition,
+      //   layerListPosition: config.layerListPosition,
+      //   legendPosition: config.legendPosition,
+      //   printPosition: config.printPosition,
+      //   basemapTogglePosition: config.basemapTogglePosition
+      // },
+      // navigationReducer: {
+      //   navigationBarOpenAtStart: config.navigationBarOpenAtStart,
+      //   minimizedSectionDisplay: config.minimizedSectionDisplay
+      // },
+      // autoPlayReducer: {
+      //   autoPlay: config.autoPlay,
+      //   autoPlayDuration: config.autoPlayDuration,
+      //   playing: false
+      // },
+      // locationReducer: {
+      //   portfolioLocation: config.portfolioLocation,
+      //   locationPanelIsOpen: false
+      // },
+      // portalReducer: {
+      //   portal: base.portal
+      // }
     } as RootState;
 
   const store = createStore(rootReducer, initialState, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());

@@ -11,7 +11,7 @@ const DEFAULT_STATE: HeaderState = {
   title
 };
 
-export default function (state = DEFAULT_STATE, action: HeaderActionTypes) {
+export default function (state = DEFAULT_STATE, action: HeaderActionTypes): HeaderState {
   switch (action.type) {
     case TOGGLE_HEADER:
       return {

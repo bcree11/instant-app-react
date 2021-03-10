@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { FC, ReactElement } from "react";
+import { useTypedSelector } from "./redux/reducers";
 
 import Header from "./Components/Header/Header";
 import View from "./Components/View/View";
@@ -15,26 +15,15 @@ interface AppProps {
   setWebmap?: any;
 }
 
-interface AppState {
-  webmap: string;
-}
+const App: FC<AppProps> = (): ReactElement => {
+  const { splash, splashOnStart } = useTypedSelector((state) => state.splash);
+  return (
+    <div className="App">
+      <Header />
+      <View />
+      {splash && splashOnStart && <Modal />}
+    </div>
+  );
+};
 
-class App extends Component<AppProps, AppState> {
-  render() {
-    return (
-      <div className="App">
-        <Header />
-        <View />
-        <Modal />
-      </div>
-    );
-  }
-}
-
-function mapStateToProps(state: AppState): AppState {
-  return {
-    ...state
-  };
-}
-
-export default connect(mapStateToProps, null)(App);
+export default App;

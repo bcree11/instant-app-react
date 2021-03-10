@@ -1,4 +1,4 @@
-import { HeaderActionTypes, SET_TITLE, TOGGLE_HEADER } from "../../types/interfaces";
+import { HeaderActionTypes, SET_TITLE, SplashActionTypes, SPLASH_ON_START, TOGGLE_HEADER } from "../../types/interfaces";
 import types from "./types";
 
 // CONFIGURATION SETTINGS
@@ -59,10 +59,9 @@ export function updateMinimizedSectionDisplay(displayType: string) {
 }
 
 // SPLASH
-export function openInfoPanel(open) {
-  const { splashOnStart } = types;
+export function openInfoPanel(open: boolean): SplashActionTypes {
   return {
-    type: splashOnStart,
+    type: SPLASH_ON_START,
     payload: open
   };
 }

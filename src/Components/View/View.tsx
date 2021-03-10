@@ -1,4 +1,4 @@
-import React, { createRef, FC, useEffect } from "react";
+import React, { createRef, FC, ReactElement, useEffect } from "react";
 import { createMapFromItem } from "../../ApplicationBase/support/itemUtils";
 import MapView from "@arcgis/core/views/MapView";
 import { useTypedSelector } from "../../redux/reducers";
@@ -7,7 +7,7 @@ const CSS = {
   base: "esri-map-series__view"
 };
 
-const View: FC = () => {
+const View: FC = (): ReactElement => {
   const mapDiv = createRef() as React.RefObject<HTMLDivElement>;
   const base = useTypedSelector((state) => state.base);
   useEffect(() => {
@@ -28,11 +28,9 @@ const View: FC = () => {
       });
     }
     createView();
-  }, [base.results, mapDiv]);
+  }, []);
 
   return <div className={CSS.base} ref={mapDiv} />;
-
-
 };
 
 export default View;

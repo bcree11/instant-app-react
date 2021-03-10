@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, ReactElement, useEffect } from "react";
 import { ApplicationConfig } from "../../ApplicationBase/interfaces";
 import "./Header.scss";
 import { useTypedSelector } from "../../redux/reducers";
@@ -13,7 +13,7 @@ const CSS = {
   base: "esri-map-series__header"
 };
 
-const Header: FC<HeaderProps> = (props) => {
+const Header: FC<HeaderProps> = (props): ReactElement => {
   const { title } = useTypedSelector(state => state.header);
 
   useEffect(() => {

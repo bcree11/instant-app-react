@@ -1,28 +1,28 @@
 import { combineReducers } from "redux";
+import { TypedUseSelectorHook, useSelector } from "react-redux";
 import headerReducer from "./header";
 import baseReducer from "./base";
-import { TypedUseSelectorHook, useSelector } from "react-redux";
+import splashReducer from "./splash";
 // import themeReducer from "./theme";
 // import itemCollectionReducer from "./itemCollection";
 // import widgetReducer from "./widget";
 // import widgetPositionReducer from "./widgetPosition";
 // import navigationReducer from "./navigation";
 // import autoPlayReducer from "./autoPlay";
-// import splashReducer from "./splash";
 // import descriptionReducer from "./descriptionReducer";
 // import locationReducer from "./location";
 // import portalReducer from "./portal";
 
 export const rootReducer = combineReducers({
   header: headerReducer,
-  base: baseReducer
+  base: baseReducer,
+  splash: splashReducer,
   // themeReducer,
   // itemCollectionReducer,
   // widgetReducer,
   // widgetPositionReducer,
   // navigationReducer,
   // autoPlayReducer,
-  // splashReducer,
   // descriptionReducer,
   // locationReducer,
   // portalReducer
