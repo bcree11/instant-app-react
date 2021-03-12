@@ -57,20 +57,10 @@ export interface HeaderState {
   title: string;
 }
 
-export interface ToggleHeaderAction {
-  type: typeof TOGGLE_HEADER;
-  payload: boolean;
-}
+// Theme
 
-export interface UpdateTitleAction {
-  type: typeof SET_TITLE;
-  payload: string;
-}
-
-export type HeaderActionTypes = ToggleHeaderAction | UpdateTitleAction;
-
-export interface IThemeReducer {
-  theme: "light" | "dark";
+export interface ThemeState {
+  theme: "dark" | "light";
   applySharedTheme: boolean;
 }
 
@@ -83,39 +73,6 @@ export interface SplashState {
   splashContent: string;
   splashButtonText: string;
 }
-
-export interface ToggleInfoAction {
-  type: typeof TOGGLE_INFO;
-  payload: boolean;
-}
-
-export interface OpenInfoPanelAction {
-  type: typeof SPLASH_ON_START;
-  payload: boolean;
-}
-
-export interface UpdateSplashTitleAction {
-  type: typeof UPDATE_SPLASH_TITLE;
-  payload: string;
-}
-
-export interface UpdateSplashContentAction {
-  type: typeof UPDATE_SPLASH_CONTENT;
-  payload: string;
-}
-
-export interface UpdateSplashButtonTextAction {
-  type: typeof UPDATE_SPLASH_BUTTON_TEXT;
-  payload: string;
-}
-
-export type SplashActionTypes =
-  | ToggleInfoAction
-  | OpenInfoPanelAction
-  | UpdateSplashTitleAction
-  | UpdateSplashContentAction
-  | UpdateSplashButtonTextAction
-  | UpdateSplashContentAction;
 
 export interface IItemCollectionReducer {
   itemCollection: Item[];

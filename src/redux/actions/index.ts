@@ -1,4 +1,4 @@
-import { HeaderActionTypes, SET_TITLE, SplashActionTypes, SPLASH_ON_START, TOGGLE_HEADER } from "../../types/interfaces";
+import { SET_TITLE, SPLASH_ON_START, TOGGLE_HEADER } from "../../types/interfaces";
 import types from "./types";
 
 // CONFIGURATION SETTINGS
@@ -10,14 +10,14 @@ export function updateStore(prop, val) {
 }
 
 // HEADER
-export function toggleHeader(headerEnabled: boolean): HeaderActionTypes {
+export function toggleHeader(headerEnabled: boolean) {
   return {
     type: TOGGLE_HEADER,
     payload: headerEnabled
   };
 }
 
-export function updateTitle(titleVal: string): HeaderActionTypes {
+export function updateTitle(titleVal: string) {
   return {
     type: SET_TITLE,
     payload: titleVal
@@ -59,7 +59,7 @@ export function updateMinimizedSectionDisplay(displayType: string) {
 }
 
 // SPLASH
-export function openInfoPanel(open: boolean): SplashActionTypes {
+export function openInfoPanel(open: boolean) {
   return {
     type: SPLASH_ON_START,
     payload: open

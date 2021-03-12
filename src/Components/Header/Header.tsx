@@ -1,20 +1,14 @@
 import React, { FC, ReactElement, useEffect } from "react";
-import { ApplicationConfig } from "../../ApplicationBase/interfaces";
+import { useSelector } from "react-redux";
+import { headerSelector } from "../../redux/slices/headerSlice";
 import "./Header.scss";
-import { useTypedSelector } from "../../redux/reducers";
-
-interface HeaderProps {
-  title?: string;
-  config?: ApplicationConfig;
-  setTitle?: (title: string) => void;
-}
 
 const CSS = {
-  base: "esri-map-series__header"
+  base: "esri-countdown__header"
 };
 
-const Header: FC<HeaderProps> = (props): ReactElement => {
-  const { title } = useTypedSelector(state => state.header);
+const Header: FC = (): ReactElement => {
+  const { title } = useSelector(headerSelector);
 
   useEffect(() => {
   }, []);

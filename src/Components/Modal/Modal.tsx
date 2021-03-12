@@ -2,9 +2,8 @@ import React, { FC, ReactElement, useEffect, useState } from "react";
 import { fetchMessageBundle } from "@arcgis/core/intl";
 import ModalT9n from "../../t9n/Modal/resources.json";
 import { getMessageBundlePath } from "../../utils/t9nUtils";
-import { useTypedSelector } from "../../redux/reducers";
-import { useDispatch } from "react-redux";
-import { openInfoPanel } from "../../redux/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { splashSelector, toggleOffSplash } from "../../redux/slices/splashSlice";
 
 interface ContentProps {
   messages: typeof ModalT9n;
@@ -44,31 +43,27 @@ const Button: FC<ButtonProps> = ({ splashButtonText, closeModal }): ReactElement
 );
 
 const Modal: FC = (): ReactElement => {
-  const {
-    splashButtonText,
-    splashTitle,
-    splashContent,
-    splashOnStart
-  } = useTypedSelector((state) => state.splash);
+  const { splashButtonText, splashTitle, splashContent, splashOnStart } = useSelector(splashSelector);
   const [messages, setMessages] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    document.addEventListener("calciteModalClose", () => {
-      dispatch(openInfoPanel(false));
+    document.addEventListener("calciteModalClose", (event) => {
+      event.stopImmediatePropagation();
+      dispatch(toggleOffSplash());
     });
     const fetchMessages = async () => {
       const data = await fetchMessageBundle(getMessageBundlePath("Modal"));
       setMessages(data);
     };
     fetchMessages();
-  }, [dispatch,messages]);
+  }, [dispatch, messages]);
 
   return (
     <calcite-modal aria-labelledby="modal-title" active={splashOnStart}>
       <Header splashTitle={splashTitle} />
       <Content messages={messages} splashContent={splashContent} />
-      <Button splashButtonText={splashButtonText} closeModal={() => dispatch(openInfoPanel(false))} />
+      <Button splashButtonText={splashButtonText} closeModal={() => dispatch(toggleOffSplash())} />
     </calcite-modal>
   );
 };

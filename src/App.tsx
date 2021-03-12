@@ -1,5 +1,5 @@
 import React, { FC, ReactElement } from "react";
-import { useTypedSelector } from "./redux/reducers";
+import { useSelector } from "react-redux";
 
 import Header from "./Components/Header/Header";
 import View from "./Components/View/View";
@@ -7,6 +7,7 @@ import Modal from "./Components/Modal/Modal";
 
 import "./App.scss";
 import { ApplicationConfig } from "./ApplicationBase/interfaces";
+import { splashSelector } from "./redux/slices/splashSlice";
 
 interface AppProps {
   portal?: __esri.Portal;
@@ -16,7 +17,7 @@ interface AppProps {
 }
 
 const App: FC<AppProps> = (): ReactElement => {
-  const { splash, splashOnStart } = useTypedSelector((state) => state.splash);
+  const { splash, splashOnStart } = useSelector(splashSelector);
   return (
     <div className="App">
       <Header />

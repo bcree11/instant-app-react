@@ -50,6 +50,7 @@
     "ncp": "^2.0.0",
     "node-sass": "^4.14.1",
     "react-app-rewired": "^2.1.6",
+    "redux-devtools-extension": "^2.13.9",
     "serve": "^11.3.2",
     "source-map-explorer": "^2.5.0",
     "terser-webpack-plugin": "^4.1.0",

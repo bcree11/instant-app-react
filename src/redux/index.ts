@@ -1,9 +1,8 @@
 import { combineReducers } from "redux";
-import { TypedUseSelectorHook, useSelector } from "react-redux";
-import headerReducer from "./header";
-import baseReducer from "./base";
-import splashReducer from "./splash";
-// import themeReducer from "./theme";
+import header from "./slices/headerSlice";
+import base from "./reducers/base";
+import splash from "./slices/splashSlice";
+import theme from "./slices/themeSlice";
 // import itemCollectionReducer from "./itemCollection";
 // import widgetReducer from "./widget";
 // import widgetPositionReducer from "./widgetPosition";
@@ -14,9 +13,10 @@ import splashReducer from "./splash";
 // import portalReducer from "./portal";
 
 export const rootReducer = combineReducers({
-  header: headerReducer,
-  base: baseReducer,
-  splash: splashReducer,
+  header,
+  base,
+  splash,
+  theme,
   // themeReducer,
   // itemCollectionReducer,
   // widgetReducer,
@@ -29,4 +29,3 @@ export const rootReducer = combineReducers({
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
-export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
