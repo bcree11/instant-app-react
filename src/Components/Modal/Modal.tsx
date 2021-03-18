@@ -44,18 +44,17 @@ const Button: FC<ButtonProps> = ({ splashButtonText, closeModal }): ReactElement
 
 const Modal: FC = (): ReactElement => {
   const { splashButtonText, splashTitle, splashContent, splashOnStart } = useSelector(splashSelector);
-  const [messages, setMessages] = useState(null);
+  const [messages, setMessages] = useState<typeof ModalT9n>(null);
   const dispatch = useDispatch();
-
+  const fetchMessages = async () => {
+    const data = await fetchMessageBundle(getMessageBundlePath("Modal"));
+    setMessages(data);
+  };
   useEffect(() => {
     document.addEventListener("calciteModalClose", (event) => {
       event.stopImmediatePropagation();
       dispatch(toggleOffSplash());
     });
-    const fetchMessages = async () => {
-      const data = await fetchMessageBundle(getMessageBundlePath("Modal"));
-      setMessages(data);
-    };
     fetchMessages();
   }, [dispatch, messages]);
 

@@ -8,6 +8,7 @@ import Modal from "./Components/Modal/Modal";
 import "./App.scss";
 import { ApplicationConfig } from "./ApplicationBase/interfaces";
 import { splashSelector } from "./redux/slices/splashSlice";
+import { headerSelector } from "./redux/slices/headerSlice";
 
 interface AppProps {
   portal?: __esri.Portal;
@@ -18,11 +19,15 @@ interface AppProps {
 
 const App: FC<AppProps> = (): ReactElement => {
   const { splash, splashOnStart } = useSelector(splashSelector);
+  const { header } = useSelector(headerSelector);
+
   return (
     <div className="App">
-      <Header />
-      <View />
-      {splash && splashOnStart && <Modal />}
+      <div className={`esri-instant__body ${header ? "esri-instant__body--header" : ""}`}>
+       {header && <Header />}
+        <View />
+        {splash && splashOnStart && <Modal />}
+      </div>
     </div>
   );
 };

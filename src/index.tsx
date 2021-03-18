@@ -46,8 +46,17 @@ import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgi
     ? { ...base.config, ...base.config.draft }
     : { ...base.config }) as typeof applicationJSON;
 
+    updateJSAPIStyles(config.theme as "light" | "dark");
+
+    console.log('base.config: ', base.config);
+    console.log('base.config.draft: ', base.config.draft);
+
+    console.log('config: ', config);
+
+
   const initialState = {
     base,
+    portal: base.portal,
     header: {
       header: config.header,
       title: config.title
@@ -63,43 +72,16 @@ import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgi
       theme: config.theme,
       applySharedTheme: config.applySharedTheme
     },
-    // itemCollectionReducer: {
-    //   itemCollection: config.itemCollection
-    // },
-    // widgetReducer: {
-    //   home: config.home,
-    //   mapZoom: config.mapZoom,
-    //   search: config.search,
-    //   layerList: config.layerList,
-    //   legend: config.legend,
-    //   print: config.print,
-    //   basemapToggle: config.basemapToggle
-    // },
-    // widgetPositionReducer: {
-    //   homePosition: config.homePosition,
-    //   mapZoomPosition: config.mapZoomPosition,
-    //   searchPosition: config.searchPosition,
-    //   layerListPosition: config.layerListPosition,
-    //   legendPosition: config.legendPosition,
-    //   printPosition: config.printPosition,
-    //   basemapTogglePosition: config.basemapTogglePosition
-    // },
-    // navigationReducer: {
-    //   navigationBarOpenAtStart: config.navigationBarOpenAtStart,
-    //   minimizedSectionDisplay: config.minimizedSectionDisplay
-    // },
-    // autoPlayReducer: {
-    //   autoPlay: config.autoPlay,
-    //   autoPlayDuration: config.autoPlayDuration,
-    //   playing: false
-    // },
-    // locationReducer: {
-    //   portfolioLocation: config.portfolioLocation,
-    //   locationPanelIsOpen: false
-    // },
-    // portalReducer: {
-    //   portal: base.portal
-    // }
+    widget: {
+      home: {
+        addToMap: config.home,
+        ui: config.homePosition
+      },
+      legend: {
+        addToMap: config.legend,
+        ui: config.legendPosition
+      },
+    }
   } as RootState;
 
   let store: Store;
@@ -134,4 +116,11 @@ function createApplicationBase(): ApplicationBase {
     config,
     settings
   });
+}
+
+function updateJSAPIStyles(theme: "light" | "dark"): void {
+  console.log({theme});
+
+  const jsapiStyles = document.getElementById("jsapiStyles") as HTMLLinkElement;
+  jsapiStyles.href =  `${process.env.PUBLIC_URL}/assets/esri/themes/${theme}/main.css`;
 }

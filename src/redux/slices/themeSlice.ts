@@ -28,6 +28,6 @@ export const themeSlice = createSlice({
   }
 });
 
-export const { updateTheme, toggleApplySharedTheme } = themeSlice.actions;
+export const { toggleApplySharedTheme, updateTheme } = themeSlice.actions;
 export const themeSelector = (state: RootState) => state.theme;
 export default themeSlice.reducer;
