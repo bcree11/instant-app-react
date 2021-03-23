@@ -15,7 +15,6 @@ import { applyPolyfills, defineCustomElements } from "@esri/calcite-components/d
 // Application/ApplicationBase
 import applicationBaseJSON from "./config/applicationBase.json";
 import applicationJSON from "./config/application.json";
-
 import ApplicationBase from "./ApplicationBase/ApplicationBase";
 
 // Service Worker
@@ -56,17 +55,24 @@ import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgi
 
   const initialState = {
     base,
-    portal: base.portal,
     header: {
       header: config.header,
       title: config.title
     },
+    portal: base.portal,
     splash: {
       splash: config.splash,
       splashTitle: config.splashTitle,
       splashContent: config.splashContent,
       splashButtonText: config.splashButtonText,
       splashOnStart: config.splashOnStart
+    },
+    telemetry: {
+      googleAnalytics: config.googleAnalytics,
+      googleAnalyticsKey: config.googleAnalyticsKey,
+      googleAnalyticsConsent: config.googleAnalyticsConsent,
+      googleAnalyticsConsentMsg: config.googleAnalyticsConsentMsg,
+      telemetry: config.telemetry
     },
     theme: {
       theme: config.theme,

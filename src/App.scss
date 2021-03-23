@@ -12,3 +12,10 @@
 .esri-instant__body--header {
   height: 95%;
 }
+.esri-instant__opt-out-button {
+  float: right;
+}
+
+html[dir="rtl"] .esri-instant__opt-out-button {
+  float: left;
+}

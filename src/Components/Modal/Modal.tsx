@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import { FC, ReactElement, useEffect, useState } from "react";
 import { fetchMessageBundle } from "@arcgis/core/intl";
 import ModalT9n from "../../t9n/Modal/resources.json";
 import { getMessageBundlePath } from "../../utils/t9nUtils";

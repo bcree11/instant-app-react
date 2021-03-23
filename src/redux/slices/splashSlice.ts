@@ -11,7 +11,7 @@ const DEFAULT_STATE: SplashState = {
   splashTitle
 };
 
-export const splashSlice = createSlice({
+const splashSlice = createSlice({
   name: "splash",
   initialState: DEFAULT_STATE,
   reducers: {

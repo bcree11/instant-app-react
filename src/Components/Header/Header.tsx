@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useLayoutEffect, useRef, useState } from "react";
+import { FC, ReactElement, useLayoutEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { portalSelector } from "../../redux/reducers/portal";
 import { headerSelector } from "../../redux/slices/headerSlice";

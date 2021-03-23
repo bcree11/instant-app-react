@@ -52,10 +52,30 @@ export interface WidgetState {
   legend: Widget;
 }
 
-export interface IPortalReducer {
-  portal: __esri.Portal;
+// Telemetry
+
+export interface TelemetryState {
+  googleAnalytics: boolean;
+  googleAnalyticsConsent: boolean;
+  googleAnalyticsConsentMsg: string;
+  googleAnalyticsKey: string;
+  // telemetry: unknown;
+  telemetry: TelemetryConfig;
 }
 
-export interface IDescriptionReducer {
-  description: boolean;
+interface TelemetryConfig {
+  name: string;
+  version: string;
+  prod: TelemetryObj;
+  dev: TelemetryObj;
+  qa: TelemetryObj;
+}
+
+interface TelemetryObj {
+  amazon: {
+    userPoolID: string;
+    app: {
+      id: string;
+    };
+  };
 }

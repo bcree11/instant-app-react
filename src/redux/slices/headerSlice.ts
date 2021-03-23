@@ -10,7 +10,7 @@ const DEFAULT_STATE: HeaderState = {
   title
 };
 
-export const headerSlice = createSlice({
+const headerSlice = createSlice({
   name: "header",
   initialState: DEFAULT_STATE,
   reducers: {
