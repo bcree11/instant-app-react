@@ -1,4 +1,3 @@
 [submodule "src/TimeDemo"]
 	path = src/TimeDemo
 	url = git@github.com:bcree11/TimeDemo.git
-	branch = main
