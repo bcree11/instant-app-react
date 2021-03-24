@@ -1,4 +1,4 @@
-import ApplicationBase from "../../ApplicationBase/ApplicationBase";
+import ApplicationBase from "@esri/application-base-js/ApplicationBase";
 import { RootState } from "../index";
 
 const DEFAULT_STATE: ApplicationBase = null;

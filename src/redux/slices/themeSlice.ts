@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { applySharedTheme } from "../../config/application.json";
+import { applySharedTheme, theme } from "../../config/application.json";
 import { ThemeState } from "../../types/interfaces";
-import { theme } from "../../config/application.json";
 import { RootState } from "../index";
 
 const DEFAULT_STATE: ThemeState = {

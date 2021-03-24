@@ -15,7 +15,7 @@ import { applyPolyfills, defineCustomElements } from "@esri/calcite-components/d
 // Application/ApplicationBase
 import applicationBaseJSON from "./config/applicationBase.json";
 import applicationJSON from "./config/application.json";
-import ApplicationBase from "./ApplicationBase/ApplicationBase";
+import ApplicationBase from "@esri/application-base-js/ApplicationBase";
 
 // Service Worker
 import * as serviceWorker from "./serviceWorker";
