@@ -2,14 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <meta name="description" content="Web site created using create-react-app" />
+    <link rel="shorcut icon" type="image/png" href="%PUBLIC_URL%/favicon.png">
+    <script>
+      if (navigator && navigator.userAgent) {
+        var match = /\b(MSIE |Trident.*?rv:|Edge\/)(\d+)/.exec(navigator.userAgent);
+        if (match && match.length && match.length === 3) {
+          const version = parseInt(match[2]);
+          if (version <= 19) {
+            document.location = "../../shared/unsupported/index.html";
+          }
+        }
+      }
+    </script>
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -27,6 +34,7 @@
     <title>Instant Apps: React with TypeScript</title>
   </head>
   <body>
+    <link id="jsapiStyles" rel="stylesheet" href="%PUBLIC_URL%/assets/esri/themes/dark/main.css" />
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--

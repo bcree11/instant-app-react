@@ -10,15 +10,11 @@ import "@arcgis/core/assets/esri/themes/dark/main.css";
 // Calcite Components
 import "@esri/calcite-components/dist/calcite/calcite.css";
 import "@esri/calcite-components/dist";
-import {
-  applyPolyfills,
-  defineCustomElements
-} from "@esri/calcite-components/dist/loader";
+import { applyPolyfills, defineCustomElements } from "@esri/calcite-components/dist/loader";
 
 // Application/ApplicationBase
 import applicationBaseJSON from "./config/applicationBase.json";
 import applicationJSON from "./config/application.json";
-
 import ApplicationBase from "./ApplicationBase/ApplicationBase";
 
 // Service Worker
@@ -26,14 +22,11 @@ import * as serviceWorker from "./serviceWorker";
 
 // Redux
 import { Provider } from "react-redux";
-import { createStore } from "redux";
-import reducer from "./reducers/reducer";
+import { createStore, Store } from "redux";
+import { rootReducer, RootState } from "./redux";
+import { composeWithDevTools } from "redux-devtools-extension";
 
-import {
-  registerMessageBundleLoader,
-  createJSONLoader,
-  setLocale
-} from "@arcgis/core/intl";
+import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgis/core/intl";
 
 (async function init(): Promise<void> {
   const base = (await createApplicationBase().load()) as ApplicationBase;
@@ -42,19 +35,61 @@ import {
     createJSONLoader({
       pattern: `${process.env.PUBLIC_URL}/`,
       base: `${process.env.PUBLIC_URL}`,
-      location: new URL(
-        `${process.env.PUBLIC_URL}/assets/`,
-        window.location.href
-      )
+      location: new URL(`${process.env.PUBLIC_URL}/assets/`, window.location.href)
     })
   );
 
   setLocale(base.locale);
 
-  const store = createStore(reducer, {
+  const config = (window.location !== window.parent.location
+    ? { ...base.config, ...base.config.draft }
+    : { ...base.config }) as typeof applicationJSON;
+
+  updateJSAPIStyles(config.theme as "light" | "dark");
+
+  const initialState = {
     base,
-    config: base.config
-  });
+    header: {
+      header: config.header,
+      title: config.title
+    },
+    portal: base.portal,
+    splash: {
+      splash: config.splash,
+      splashTitle: config.splashTitle,
+      splashContent: config.splashContent,
+      splashButtonText: config.splashButtonText,
+      splashOnStart: config.splashOnStart
+    },
+    telemetry: {
+      googleAnalytics: config.googleAnalytics,
+      googleAnalyticsKey: config.googleAnalyticsKey,
+      googleAnalyticsConsent: config.googleAnalyticsConsent,
+      googleAnalyticsConsentMsg: config.googleAnalyticsConsentMsg,
+      telemetry: config.telemetry
+    },
+    theme: {
+      theme: config.theme,
+      applySharedTheme: config.applySharedTheme
+    },
+    widget: {
+      home: {
+        addToMap: config.home,
+        ui: config.homePosition
+      },
+      mapZoom: {
+        addToMap: config.mapZoom,
+        ui: config.mapZoomPosition
+      }
+    }
+  } as RootState;
+
+  let store: Store;
+  if (process.env.NODE_ENV === "development") {
+    store = createStore(rootReducer, initialState, composeWithDevTools());
+  } else {
+    store = createStore(rootReducer, initialState);
+  }
 
   await applyPolyfills();
   defineCustomElements(window);
@@ -81,4 +116,9 @@ function createApplicationBase(): ApplicationBase {
     config,
     settings
   });
+}
+
+function updateJSAPIStyles(theme: "light" | "dark"): void {
+  const jsapiStyles = document.getElementById("jsapiStyles") as HTMLLinkElement;
+  jsapiStyles.href = `${process.env.PUBLIC_URL}/assets/esri/themes/${theme}/main.css`;
 }

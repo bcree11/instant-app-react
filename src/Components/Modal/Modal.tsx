@@ -1,69 +1,71 @@
-import React, { Component } from "react";
+import { FC, ReactElement, useEffect, useState } from "react";
 import { fetchMessageBundle } from "@arcgis/core/intl";
 import ModalT9n from "../../t9n/Modal/resources.json";
+import { getMessageBundlePath } from "../../utils/t9nUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { splashSelector, toggleOffSplash } from "../../redux/slices/splashSlice";
 
-interface ModalProps {}
-
-interface ModalState {
-  open: boolean;
+interface ContentProps {
   messages: typeof ModalT9n;
+  splashContent: string;
 }
 
-class Modal extends Component<ModalProps, ModalState> {
-  constructor(props: ModalProps) {
-    super(props);
-    this.state = {
-      open: true,
-      messages: null
-    };
-  }
+interface HeaderProps {
+  splashTitle: string;
+}
 
-  async componentDidMount() {
-    const messages = await fetchMessageBundle(
-      `${process.env.PUBLIC_URL}/assets/Modal/resources`
-    );
-    this.setState({
-      messages
+interface ButtonProps {
+  splashButtonText: string;
+  closeModal: Function;
+}
+
+function removePTags(splashContent: string): string {
+  const openPTags = splashContent.replace("<p>", "");
+  return openPTags.replace("</p>", "");
+}
+
+const Content: FC<ContentProps> = ({ messages, splashContent }): ReactElement => {
+  const contentToDisplay = removePTags(splashContent);
+  const content = contentToDisplay ? contentToDisplay : messages?.defaultSplashContent;
+  return <div slot="content" dangerouslySetInnerHTML={{ __html: content }} />;
+};
+
+const Header: FC<HeaderProps> = ({ splashTitle }): ReactElement => (
+  <h2 slot="header" id="modal-title">
+    {splashTitle}
+  </h2>
+);
+
+const Button: FC<ButtonProps> = ({ splashButtonText, closeModal }): ReactElement => (
+  <calcite-button onClick={closeModal} slot="primary" width="full">
+    {splashButtonText}
+  </calcite-button>
+);
+
+const Modal: FC = (): ReactElement => {
+  const { splashButtonText, splashTitle, splashContent, splashOnStart } = useSelector(splashSelector);
+  const [messages, setMessages] = useState<typeof ModalT9n>(null);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchMessages(): Promise<void> {
+      const data = await fetchMessageBundle(getMessageBundlePath("Modal"));
+      setMessages(data);
+    }
+    document.addEventListener("calciteModalClose", (event) => {
+      event.stopImmediatePropagation();
+      dispatch(toggleOffSplash());
     });
-  }
+    fetchMessages();
+  }, [dispatch]);
 
-  render() {
-    const messages = this.state?.messages;
-    return (
-      <calcite-modal aria-labelledby="modal-title" active={this.state.open}>
-        <h3 slot="header" id="modal-title">
-          {messages?.welcome}
-        </h3>
-        <div slot="content">
-          This ArcGIS Online Instant App example is built with the following:
-          <ul>
-            <li>React with TypeScript</li>
-            <li>Redux</li>
-            <li>ArcGIS Core (ArcGIS API for JavaScript ES modules)</li>
-            <li>
-              Calcite Components (Shared Web Components for Esri's Calcite
-              design framework)
-            </li>
-            <li>
-              Esri's Application Base (Boilerplate code for ArcGIS Online
-              Templates and Instant Apps)
-            </li>
-          </ul>
-        </div>
-        <calcite-button
-          onClick={() => this.closeModal()}
-          slot="primary"
-          width="full"
-        >
-          {messages?.enter}
-        </calcite-button>
-      </calcite-modal>
-    );
-  }
-
-  closeModal(): void {
-    this.setState({ open: false });
-  }
-}
+  return (
+    <calcite-modal aria-labelledby="modal-title" active={splashOnStart}>
+      <Header splashTitle={splashTitle} />
+      <Content messages={messages} splashContent={splashContent} />
+      <Button splashButtonText={splashButtonText} closeModal={() => dispatch(toggleOffSplash())} />
+    </calcite-modal>
+  );
+};
 
 export default Modal;

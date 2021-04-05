@@ -1,67 +1,99 @@
-import React, { Component, createRef } from "react";
-
-import { connect } from "react-redux";
-
-import ApplicationBase from "../../ApplicationBase/ApplicationBase";
-
+import { FC, ReactElement, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { createMapFromItem } from "../../ApplicationBase/support/itemUtils";
+import { baseSelector } from "../../redux/reducers/base";
+import { widgetSelector } from "../../redux/slices/widgetSlice";
+import ViewT9n from "../../t9n/View/resources.json";
 
+import Home from "@arcgis/core/widgets/Home";
 import MapView from "@arcgis/core/views/MapView";
+import Zoom from "@arcgis/core/widgets/Zoom";
 
-interface ViewProps {
-  base: ApplicationBase;
-}
+import "./View.scss";
 
-interface ViewState {
-  mapDiv: HTMLDivElement;
-}
+import { fetchMessageBundle } from "@arcgis/core/intl";
+import { getMessageBundlePath } from "../../utils/t9nUtils";
 
 const CSS = {
-  base: "esri-map-series__view"
+  base: "esri-instant-app__view"
 };
 
-class View extends Component<ViewProps, ViewState> {
-  mapDiv = createRef() as React.RefObject<HTMLDivElement>;
+const View: FC = (): ReactElement => {
+  const [view] = useState<__esri.MapView>(new MapView());
+  const [messages, setMessages] = useState<typeof ViewT9n>(null);
+  const mapDiv = useRef<HTMLDivElement>(null);
+  const { home, mapZoom } = useSelector(widgetSelector);
+  const base = useSelector(baseSelector);
+  const handleHome = useCallback((): void => {
+    const homeWidget = view.ui.find("home");
+    if (home.addToMap) {
+      if (homeWidget) {
+        view.ui.move({
+          component: homeWidget,
+          position: home.ui.position,
+          index: home.ui.index
+        });
+        return;
+      }
+      view.ui.add({
+        component: new Home({ view: view, id: "home" }),
+        position: home.ui.position,
+        index: home.ui.index
+      });
+    } else {
+      view.ui.remove(homeWidget);
+    }
+  }, [home, view]);
+  const handleMapZoom = useCallback((): void => {
+    const zoomWidget = view.ui.find("mapZoom");
+    if (mapZoom.addToMap) {
+      if (zoomWidget) {
+        view.ui.move({
+          component: zoomWidget,
+          position: mapZoom.ui.position,
+          index: mapZoom.ui.index
+        });
+        return;
+      }
+      view.ui.add({
+        component: new Zoom({ view: view, id: "mapZoom" }),
+        position: mapZoom.ui.position,
+        index: mapZoom.ui.index
+      });
+    } else {
+      view.ui.remove(zoomWidget);
+    }
+  }, [mapZoom, view]);
 
-  componentDidMount() {
-    this.createView();
-  }
+  useLayoutEffect(() => {
+    async function fetchMessages(): Promise<void> {
+      const data = await fetchMessageBundle(getMessageBundlePath("View"));
+      setMessages(data);
+    }
+    fetchMessages();
+  }, []);
 
-  render() {
-    return <div className={CSS.base} ref={this.mapDiv} />;
-  }
+  useLayoutEffect(() => {
+    async function createView(): Promise<void> {
+      const portalItem: __esri.PortalItem = base.results.applicationItem.value;
+      const appProxies = portalItem?.applicationProxies ? portalItem.applicationProxies : null;
+      const { webMapItems } = base.results;
+      let item = null;
+      webMapItems.forEach((response) => (item = response.value));
+      const map = await createMapFromItem({ item, appProxies });
+      view.container = mapDiv.current;
+      view.map = map;
+      view.ui.remove("zoom");
+    }
+    createView();
+  }, [base, mapDiv, view]);
 
-  async createView(): Promise<__esri.MapView> {
-    const portalItem: __esri.PortalItem = this.props.base.results
-      .applicationItem.value;
+  useLayoutEffect(() => {
+    handleHome();
+    handleMapZoom();
+  }, [handleHome, handleMapZoom, home.addToMap, mapZoom.addToMap, view.ready]);
 
-    const appProxies = portalItem?.applicationProxies
-      ? portalItem.applicationProxies
-      : null;
+  return <div className={CSS.base} ref={mapDiv} />;
+};
 
-    const { webMapItems } = this.props.base.results;
-
-    let item = null;
-
-    webMapItems.forEach(response => {
-      item = response.value;
-    });
-
-    const map = await createMapFromItem({ item, appProxies });
-
-    const view = new MapView({
-      container: this.mapDiv.current,
-      map
-    });
-
-    return view;
-  }
-}
-
-function mapStateToProps(state) {
-  return {
-    ...state
-  };
-}
-
-export default connect(mapStateToProps, null)(View);
+export default View;

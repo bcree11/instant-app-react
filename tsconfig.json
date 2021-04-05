@@ -3,11 +3,15 @@
     "target": "ES5",
     "module": "ESNext",
     "allowJs": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
@@ -15,9 +19,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "noImplicitAny": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "noFallthroughCasesInSwitch": true
   },
-  "files": ["src/types/declarations.d.ts"],
+  "files": [
+    "src/types/declarations.d.ts"
+  ],
   "include": [
     "src/**/*.tsx",
     "src/**/*.ts",

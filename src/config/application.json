@@ -1,13 +1,34 @@
 {
   "appid": "",
-  "title": "",
+  "title": "Instant App",
   "webmap": "default",
-  "portalUrl": "https://arcgis.com/",
-  "oauthappid": "",
+  "portalUrl": "https://nw-brews.mapsdevext.arcgis.com",
+  "oauthappid": "arcgisWebApps",
   "proxyUrl": "",
   "units": "",
   "googleAnalytics": false,
   "googleAnalyticsKey": null,
+  "googleAnalyticsConsent": false,
+  "googleAnalyticsConsentMsg": null,
+  "header": true,
+  "splash": true,
+  "infoPanelOpenAtStart": false,
+  "splashTitle": "Welcome!",
+  "splashContent": "",
+  "splashButtonText": "Explore",
+  "splashOnStart": true,
+  "theme": "dark",
+  "applySharedTheme": false,
+  "home": true,
+  "homePosition": {
+    "position": "top-left",
+    "index": 0
+  },
+  "mapZoom": true,
+  "mapZoomPosition": {
+    "position": "top-left",
+    "index": 1
+  },
   "helperServices": {
     "geometry": {
       "url": null
@@ -23,5 +44,33 @@
         "url": null
       }
     ]
+  },
+  "telemetry": {
+    "name": "instant-app",
+    "version": "1.0",
+    "prod": {
+      "amazon": {
+        "userPoolID": "us-east-1:8c41b2dc-7563-403d-ba64-673b103debce",
+        "app": {
+          "id": "977e9b0602bb446d8f2fa5a50489d053"
+        }
+      }
+    },
+    "dev": {
+      "amazon": {
+        "userPoolID": "us-east-1:7345bcf2-bffa-4849-a379-a83178f63eef",
+        "app": {
+          "id": "eadf587070d04c86b747a938cc655e76"
+        }
+      }
+    },
+    "qa": {
+      "amazon": {
+        "userPoolID": "us-east-1:7345bcf2-bffa-4849-a379-a83178f63eef",
+        "app": {
+          "id": "74ec952cdae444389057fbae08043476"
+        }
+      }
+    }
   }
 }

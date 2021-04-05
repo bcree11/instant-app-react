@@ -504,3 +504,7 @@ declare global {
     }
   }
 }
+declare module "@esri/application-base-js/ApplicationBase/support/itemUtils" {
+  const value: any;
+  export = value;
+}

@@ -1,40 +1,35 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import { FC, ReactElement } from "react";
+import { useSelector } from "react-redux";
 
 import Header from "./Components/Header/Header";
 import View from "./Components/View/View";
 import Modal from "./Components/Modal/Modal";
+import Telemetry from "./Components/Telemetry/Telemetry";
 
 import "./App.scss";
-import { ApplicationConfig } from "./ApplicationBase/interfaces";
 
-interface AppProps {
-  portal: __esri.Portal;
-  config: ApplicationConfig;
-  webmap: string;
-  setWebmap: any;
-}
+import { splashSelector } from "./redux/slices/splashSlice";
+import { headerSelector } from "./redux/slices/headerSlice";
 
-interface AppState {
-  webmap: string;
-}
+const CSS = {
+  body: "esri-instant-app__body",
+  bodyHeader: "esri-instant-app__body--header"
+};
 
-class App extends Component<AppProps, AppState> {
-  render() {
-    return (
-      <div className="App">
-        <Header />
+const App: FC = (): ReactElement => {
+  const { splash, splashOnStart } = useSelector(splashSelector);
+  const { header } = useSelector(headerSelector);
+
+  return (
+    <div className="App">
+      <div className={CSS.body + ` ${header ? CSS.bodyHeader : ""}`}>
+       {header && <Header />}
         <View />
-        <Modal />
+        {splash && splashOnStart && <Modal />}
+        <Telemetry />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-function mapStateToProps(state: AppState): AppState {
-  return {
-    ...state
-  };
-}
-
-export default connect(mapStateToProps, null)(App);
+export default App;
