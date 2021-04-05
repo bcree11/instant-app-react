@@ -13,21 +13,13 @@
   "header": true,
   "splash": true,
   "infoPanelOpenAtStart": false,
-  "itemCollection": [],
-  "navigationBar": true,
-  "navigationBarOpenAtStart": true,
   "splashTitle": "Welcome!",
   "splashContent": "",
   "splashButtonText": "Explore",
   "splashOnStart": true,
-  "autoPlay": false,
-  "autoPlayDuration": 5000,
   "theme": "dark",
-  "home": true,
-  "preload": false,
   "applySharedTheme": false,
-  "portfolioLocation": false,
-  "minimizedSectionDisplay": "itemThumbnail",
+  "home": true,
   "homePosition": {
     "position": "top-left",
     "index": 0
@@ -35,31 +27,6 @@
   "mapZoom": true,
   "mapZoomPosition": {
     "position": "top-left",
-    "index": 1
-  },
-  "legend": true,
-  "legendPosition": {
-    "position": "bottom-left",
-    "index": 0
-  },
-  "search": true,
-  "searchPosition": {
-    "position": "top-right",
-    "index": 0
-  },
-  "layerList": false,
-  "layerListPosition": {
-    "position": "bottom-right",
-    "index": 0
-  },
-  "basemapToggle": false,
-  "basemapTogglePosition": {
-    "position": "bottom-right",
-    "index": 1
-  },
-  "print": false,
-  "printPosition": {
-    "position": "top-right",
     "index": 1
   },
   "helperServices": {
@@ -79,7 +46,7 @@
     ]
   },
   "telemetry": {
-    "name": "portfolio",
+    "name": "instant-app",
     "version": "1.0",
     "prod": {
       "amazon": {

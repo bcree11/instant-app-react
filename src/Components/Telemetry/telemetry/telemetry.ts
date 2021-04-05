@@ -102,10 +102,7 @@ interface ArcGISTelemetryCredentials {
 class Telemetry {
   private static _instance: TelemetryInstance;
   private static gaids = ["ga1", "ga2"];
-  public static async init(
-    settings: TelemetrySettings,
-    useCache?: boolean
-  ): Promise<TelemetryInstance> {
+  public static async init(settings: TelemetrySettings, useCache?: boolean): Promise<TelemetryInstance> {
     return create(async (resolve, reject) => {
       const { portal, config } = settings;
       this._instance = null;
@@ -117,8 +114,7 @@ class Telemetry {
         portal,
         amazon: this._getAmazonCredentials(settings),
         google: this._isGoogleEnabled(config) ? true : false,
-        debug:
-          this._getEnvironment(portal.portalHostname) === "dev" ? true : false
+        debug: this._getEnvironment(portal.portalHostname) === "dev" ? true : false
       };
       const arcGISTelemetry = new ArcGISTelemetry(options) as unknown;
       const telemetry = arcGISTelemetry as TelemetryInstance;
@@ -135,15 +131,13 @@ class Telemetry {
       // Check to see if messaging has been enabled and if so
       // check to see if they've opted in
       if (googleAnalyticsConsent) {
-        enabled = localStorage.getItem("analytics-opt-in-portfolio") || false;
+        enabled = localStorage.getItem("analytics-opt-in-instant-app") || false;
       }
     }
     console.log("Is GA Enabled", enabled);
     return enabled;
   }
-  private static _getAmazonCredentials(
-    settings: any
-  ): ArcGISTelemetryCredentials {
+  private static _getAmazonCredentials(settings: any): ArcGISTelemetryCredentials {
     const envCredentials = settings.config.telemetry;
     if (!envCredentials) return;
     const env: string = this._getEnvironment(settings.portal.portalHostname);
@@ -167,11 +161,7 @@ class Telemetry {
         resolve();
         return;
       }
-      const {
-        googleAnalytics,
-        googleAnalyticsKey,
-        googleAnalyticsConsent
-      } = settings.config;
+      const { googleAnalytics, googleAnalyticsKey } = settings.config;
       // Don't enable GA if users haven't opted-in
       const enableGoogle = this._isGoogleEnabled(settings.config);
 
@@ -194,14 +184,11 @@ class Telemetry {
       if (googleAnalytics && googleAnalyticsKey && !scriptsExist) {
         const gaScript = document.createElement("script");
         gaScript.setAttribute("async", "true");
-        gaScript.setAttribute(
-          "src",
-          `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsKey}`
-        );
+        gaScript.setAttribute("src", `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsKey}`);
         gaScript.id = this.gaids[0];
         const gaScript2 = document.createElement("script");
         gaScript2.id = this.gaids[1];
-        gaScript2.innerText = `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag(\'js\', new Date());gtag(\'config\', \'${googleAnalyticsKey}\');`;
+        gaScript2.innerText = `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '${googleAnalyticsKey}');`;
         const head = document.getElementsByTagName("head")[0];
         head.insertBefore(gaScript, head.firstChild);
         head.insertBefore(gaScript2, head.firstChild);
@@ -226,13 +213,13 @@ class Telemetry {
     });
   }
   static _googleScripts() {
-    const alreadyLoaded = this.gaids.every(id => {
+    const alreadyLoaded = this.gaids.every((id) => {
       return document.getElementById(id) !== null ? true : false;
     });
     return alreadyLoaded;
   }
   public static removeScripts() {
-    this.gaids.forEach(id => {
+    this.gaids.forEach((id) => {
       const gaScript = document.getElementById(id);
       gaScript?.parentNode.removeChild(gaScript);
     });
@@ -242,11 +229,7 @@ class Telemetry {
     if (document.location.hostname.indexOf("arcgis.com") === -1) {
       return "dev";
     } else {
-      return (
-        (h === "arcgis.com" && "prod") ||
-        (h === "qaext.arcgis.com" && "qa") ||
-        "dev"
-      );
+      return (h === "arcgis.com" && "prod") || (h === "qaext.arcgis.com" && "qa") || "dev";
     }
   }
 }

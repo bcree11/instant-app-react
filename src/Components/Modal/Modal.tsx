@@ -46,17 +46,18 @@ const Modal: FC = (): ReactElement => {
   const { splashButtonText, splashTitle, splashContent, splashOnStart } = useSelector(splashSelector);
   const [messages, setMessages] = useState<typeof ModalT9n>(null);
   const dispatch = useDispatch();
-  const fetchMessages = async () => {
-    const data = await fetchMessageBundle(getMessageBundlePath("Modal"));
-    setMessages(data);
-  };
+
   useEffect(() => {
+    async function fetchMessages(): Promise<void> {
+      const data = await fetchMessageBundle(getMessageBundlePath("Modal"));
+      setMessages(data);
+    }
     document.addEventListener("calciteModalClose", (event) => {
       event.stopImmediatePropagation();
       dispatch(toggleOffSplash());
     });
     fetchMessages();
-  }, [dispatch, messages]);
+  }, [dispatch]);
 
   return (
     <calcite-modal aria-labelledby="modal-title" active={splashOnStart}>

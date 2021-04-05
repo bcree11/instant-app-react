@@ -49,7 +49,7 @@ interface Widget {
 
 export interface WidgetState {
   home: Widget;
-  legend: Widget;
+  mapZoom: Widget;
 }
 
 // Telemetry
@@ -59,7 +59,6 @@ export interface TelemetryState {
   googleAnalyticsConsent: boolean;
   googleAnalyticsConsentMsg: string;
   googleAnalyticsKey: string;
-  // telemetry: unknown;
   telemetry: TelemetryConfig;
 }
 

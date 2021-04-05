@@ -7,8 +7,8 @@ import { Theme } from "../../types/interfaces";
 import "./Header.scss";
 
 const CSS = {
-  base: "esri-instant__header",
-  baseLight: "esri-instant__header--light"
+  base: "esri-instant-app__header",
+  baseLight: "esri-instant-app__header--light"
 };
 
 interface SharedThemeItem {

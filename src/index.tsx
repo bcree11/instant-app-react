@@ -45,13 +45,7 @@ import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgi
     ? { ...base.config, ...base.config.draft }
     : { ...base.config }) as typeof applicationJSON;
 
-    updateJSAPIStyles(config.theme as "light" | "dark");
-
-    console.log('base.config: ', base.config);
-    console.log('base.config.draft: ', base.config.draft);
-
-    console.log('config: ', config);
-
+  updateJSAPIStyles(config.theme as "light" | "dark");
 
   const initialState = {
     base,
@@ -83,10 +77,10 @@ import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgi
         addToMap: config.home,
         ui: config.homePosition
       },
-      legend: {
-        addToMap: config.legend,
-        ui: config.legendPosition
-      },
+      mapZoom: {
+        addToMap: config.mapZoom,
+        ui: config.mapZoomPosition
+      }
     }
   } as RootState;
 
@@ -125,8 +119,6 @@ function createApplicationBase(): ApplicationBase {
 }
 
 function updateJSAPIStyles(theme: "light" | "dark"): void {
-  console.log({theme});
-
   const jsapiStyles = document.getElementById("jsapiStyles") as HTMLLinkElement;
-  jsapiStyles.href =  `${process.env.PUBLIC_URL}/assets/esri/themes/${theme}/main.css`;
+  jsapiStyles.href = `${process.env.PUBLIC_URL}/assets/esri/themes/${theme}/main.css`;
 }

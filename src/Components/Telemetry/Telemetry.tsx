@@ -1,16 +1,22 @@
-import { FC, ReactElement, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { FC, ReactElement, useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-import { telemetrySelector, updateGAConsent } from "../../redux/slices/telemetrySlice";
+import { telemetrySelector } from "../../redux/slices/telemetrySlice";
 import { portalSelector } from "../../redux/reducers/portal";
 import { themeSelector } from "../../redux/slices/themeSlice";
 import TelemetryInstance from "./telemetry/telemetry";
+import { TelemetryState, Theme } from "../../types/interfaces";
 
 const CSS = {
-  optOutButton: "esri-instant__opt-out-button"
+  optOutButton: "esri-instant-app__opt-out-button"
 };
 
-const Alert: FC<any> = ({
+interface AlertProps extends TelemetryState {
+  theme: Theme;
+  handleClick: () => void;
+}
+
+const Alert: FC<AlertProps> = ({
   googleAnalytics,
   googleAnalyticsKey,
   googleAnalyticsConsent,
@@ -19,7 +25,7 @@ const Alert: FC<any> = ({
   telemetry,
   theme
 }): ReactElement => {
-  const enableGA = localStorage.getItem(`analytics-opt-in-${telemetry.name}`) || false;
+  const enableGA = localStorage.getItem(`analytics-opt-in-${telemetry.name}`) ?? false;
   const isActive = googleAnalytics && googleAnalyticsKey !== null && googleAnalyticsConsent && !enableGA ? true : false;
   return (
     <calcite-alert intl-close="Close" scale="s" theme={theme} active={isActive}>
@@ -41,34 +47,10 @@ const Telemetry: FC = (): ReactElement => {
   } = useSelector(telemetrySelector);
   const { theme } = useSelector(themeSelector);
   const portal = useSelector(portalSelector);
-  const dispatch = useDispatch();
   const [initTelemetry, setInitTelemetry] = useState<boolean>(false);
   const [telemetryInstance, setTelemetryInstance] = useState<TelemetryInstance>(null);
   const [optIn, setOptIn] = useState<boolean>(false);
-
-  useEffect(() => {
-    handleTelemetry();
-    if (optIn) {
-      createTelemetry();
-      setOptIn(false);
-      return;
-    }
-    if (localStorage.getItem(`analytics-opt-in-${telemetry.name}`) && !initTelemetry) {
-      setInitTelemetry(true);
-      createTelemetry();
-      return;
-    }
-  }, [optIn]);
-
-  function handleTelemetry() {
-    if (googleAnalytics && googleAnalyticsKey && googleAnalyticsConsent && googleAnalyticsConsentMsg) {
-      setInitTelemetry(true);
-      createTelemetry();
-    }
-  }
-
-  async function createTelemetry() {
-    // add alert to container
+  const createTelemetry = useCallback(async () => {
     const appName = telemetry?.name;
     const telemetryInstance = await TelemetryInstance.init({
       portal,
@@ -80,32 +62,35 @@ const Telemetry: FC = (): ReactElement => {
       },
       appName
     });
-
     telemetryInstance?.logPageView();
     setTelemetryInstance(telemetryInstance);
-  }
+  }, [googleAnalytics, googleAnalyticsConsent, googleAnalyticsConsentMsg, googleAnalyticsKey, portal, telemetry]);
 
-  function handleClick() {
-    // Add opt-in value to local storage
+  useEffect(() => {
+    if (googleAnalytics && googleAnalyticsKey && googleAnalyticsConsent && googleAnalyticsConsentMsg) {
+      setInitTelemetry(true);
+      createTelemetry();
+    }
+  }, [createTelemetry, googleAnalytics, googleAnalyticsConsent, googleAnalyticsConsentMsg, googleAnalyticsKey, optIn]);
+
+  function handleClick(): void {
     localStorage.setItem(`analytics-opt-in-${telemetry.name}`, "true");
-    // update config setting to trigger GA reset and
-    // prevent dialog from showing
-    dispatch(updateGAConsent(false));
     setOptIn(true);
   }
 
-  return initTelemetry && telemetryInstance ? (
-    <Alert
-      googleAnalytics={googleAnalytics}
-      googleAnalyticsKey={googleAnalyticsKey}
-      googleAnalyticsConsent={googleAnalyticsConsent}
-      googleAnalyticsConsentMsg={googleAnalyticsConsentMsg}
-      handleClick={handleClick}
-      telemetry={telemetry}
-      theme={theme}
-    />
-  ) : (
-    <></>
+  return (
+    initTelemetry &&
+    telemetryInstance && (
+      <Alert
+        googleAnalytics={googleAnalytics}
+        googleAnalyticsKey={googleAnalyticsKey}
+        googleAnalyticsConsent={googleAnalyticsConsent}
+        googleAnalyticsConsentMsg={googleAnalyticsConsentMsg}
+        handleClick={handleClick}
+        telemetry={telemetry}
+        theme={theme}
+      />
+    )
   );
 };
 

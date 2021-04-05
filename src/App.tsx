@@ -11,13 +11,18 @@ import "./App.scss";
 import { splashSelector } from "./redux/slices/splashSlice";
 import { headerSelector } from "./redux/slices/headerSlice";
 
+const CSS = {
+  body: "esri-instant-app__body",
+  bodyHeader: "esri-instant-app__body--header"
+};
+
 const App: FC = (): ReactElement => {
   const { splash, splashOnStart } = useSelector(splashSelector);
   const { header } = useSelector(headerSelector);
 
   return (
     <div className="App">
-      <div className={`esri-instant__body ${header ? "esri-instant__body--header" : ""}`}>
+      <div className={CSS.body + ` ${header ? CSS.bodyHeader : ""}`}>
        {header && <Header />}
         <View />
         {splash && splashOnStart && <Modal />}

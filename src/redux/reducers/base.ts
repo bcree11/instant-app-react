@@ -3,7 +3,7 @@ import { RootState } from "../index";
 
 const DEFAULT_STATE: ApplicationBase = null;
 
-export default function (state = DEFAULT_STATE): ApplicationBase {
+export default function base(state = DEFAULT_STATE): ApplicationBase {
   return state;
 }
 

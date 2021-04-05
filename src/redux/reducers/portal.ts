@@ -2,7 +2,7 @@ import { RootState } from "../index";
 
 const DEFAULT_STATE: __esri.Portal = null;
 
-export default function (state = DEFAULT_STATE): __esri.Portal {
+export default function portal(state = DEFAULT_STATE): __esri.Portal {
   return state;
 }
 

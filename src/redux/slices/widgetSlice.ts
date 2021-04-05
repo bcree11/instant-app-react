@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../index";
-import { home, homePosition, legend, legendPosition } from "../../config/application.json";
+import { home, homePosition, mapZoom, mapZoomPosition } from "../../config/application.json";
 import { WidgetPosition, WidgetState } from "../../types/interfaces";
 
 const DEFAULT_STATE: WidgetState = {
@@ -8,9 +8,9 @@ const DEFAULT_STATE: WidgetState = {
     addToMap: home,
     ui: homePosition as WidgetPosition
   },
-  legend: {
-    addToMap: legend,
-    ui: legendPosition as WidgetPosition
+  mapZoom: {
+    addToMap: mapZoom,
+    ui: mapZoomPosition as WidgetPosition
   }
 };
 
@@ -24,15 +24,15 @@ const widgetSlice = createSlice({
     updateHomeWidgetPosition: (state, { payload }: PayloadAction<WidgetPosition>) => {
       state.home.ui = payload;
     },
-    toggleLegendWidget: (state) => {
-      state.legend.addToMap = !state.legend.addToMap;
+    toggleMapZoomWidget: (state) => {
+      state.mapZoom.addToMap = !state.mapZoom.addToMap;
     },
-    updateLegendWidgetPosition: (state, { payload }: PayloadAction<WidgetPosition>) => {
-      state.legend.ui = payload;
+    updateMapZoomWidgetPosition: (state, { payload }: PayloadAction<WidgetPosition>) => {
+      state.mapZoom.ui = payload;
     }
   }
 });
 
-export const { toggleHomeWidget, toggleLegendWidget } = widgetSlice.actions;
+export const { toggleHomeWidget, toggleMapZoomWidget } = widgetSlice.actions;
 export const widgetSelector = (state: RootState) => state.widget;
 export default widgetSlice.reducer;
