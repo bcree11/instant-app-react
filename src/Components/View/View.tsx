@@ -1,7 +1,6 @@
 import { FC, ReactElement, useCallback, useLayoutEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { createMapFromItem } from "../../ApplicationBase/support/itemUtils";
-// import { createMapFromItem } from "@esri/application-base-js/support/itemUtils"
 import { baseSelector } from "../../redux/reducers/base";
 import { widgetSelector } from "../../redux/slices/widgetSlice";
 import ViewT9n from "../../t9n/View/resources.json";
