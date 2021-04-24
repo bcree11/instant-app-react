@@ -131,7 +131,7 @@ class Telemetry {
       // Check to see if messaging has been enabled and if so
       // check to see if they've opted in
       if (googleAnalyticsConsent) {
-        enabled = localStorage.getItem("analytics-opt-in-instant-app") || false;
+        enabled = localStorage.getItem("analytics-opt-in-countdown-app") || false;
       }
     }
     console.log("Is GA Enabled", enabled);

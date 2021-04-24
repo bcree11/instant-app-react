@@ -8,7 +8,7 @@ import TelemetryInstance from "./telemetry/telemetry";
 import { TelemetryState, Theme } from "../../types/interfaces";
 
 const CSS = {
-  optOutButton: "esri-instant-app__opt-out-button"
+  optOutButton: "esri-countdown-app__opt-out-button"
 };
 
 interface AlertProps extends TelemetryState {

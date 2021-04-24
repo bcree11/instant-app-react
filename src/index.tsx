@@ -13,9 +13,10 @@ import "@esri/calcite-components/dist";
 import { applyPolyfills, defineCustomElements } from "@esri/calcite-components/dist/loader";
 
 // Application/ApplicationBase
+import ApplicationBase from "./ApplicationBase/ApplicationBase";
 import applicationBaseJSON from "./config/applicationBase.json";
 import applicationJSON from "./config/application.json";
-import ApplicationBase from "./ApplicationBase/ApplicationBase";
+import { createMapFromItem } from "./ApplicationBase/support/itemUtils";
 
 // Service Worker
 import * as serviceWorker from "./serviceWorker";
@@ -27,6 +28,7 @@ import { rootReducer, RootState } from "./redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgis/core/intl";
+import { SectionState } from "./types/interfaces";
 
 (async function init(): Promise<void> {
   const base = (await createApplicationBase().load()) as ApplicationBase;
@@ -47,13 +49,19 @@ import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgi
 
   updateJSAPIStyles(config.theme as "light" | "dark");
 
+  const portalItem: __esri.PortalItem = base.results.applicationItem.value;
+  const appProxies = portalItem?.applicationProxies ? portalItem.applicationProxies : null;
+  const { webMapItems } = base.results;
+  let item = null;
+  webMapItems.forEach((response) => (item = response.value));
+  const map = await createMapFromItem({ item, appProxies });
+
   const initialState = {
-    base,
-    header: {
-      header: config.header,
-      title: config.title
-    },
+    map,
     portal: base.portal,
+    sections: {
+      sections: updateSections(config.sections as SectionState[])
+    },
     splash: {
       splash: config.splash,
       splashTitle: config.splashTitle,
@@ -121,4 +129,18 @@ function createApplicationBase(): ApplicationBase {
 function updateJSAPIStyles(theme: "light" | "dark"): void {
   const jsapiStyles = document.getElementById("jsapiStyles") as HTMLLinkElement;
   jsapiStyles.href = `${process.env.PUBLIC_URL}/assets/esri/themes/${theme}/main.css`;
+}
+
+function updateSections(sections: SectionState[]): SectionState[] {
+  if (sections && sections.length) {
+    sections.sort((a, b) => a.position - b.position);
+    for (const section of sections) {
+      if (section.position === 0) {
+        section.active = true;
+      } else {
+        section.active = false;
+      }
+    }
+  }
+  return sections;
 }

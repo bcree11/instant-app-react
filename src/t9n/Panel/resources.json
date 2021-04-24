@@ -1,0 +1,9 @@
+{
+  "placeholder": "Search",
+  "tabs": {
+    "intro": "Intro",
+    "countdown": "Countdown",
+    "leaderboard": "Leaderboard",
+    "summary": "Summary"
+  }
+}

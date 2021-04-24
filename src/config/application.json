@@ -2,7 +2,7 @@
   "appid": "",
   "title": "Instant App",
   "webmap": "default",
-  "portalUrl": "https://nw-brews.mapsdevext.arcgis.com",
+  "portalUrl": "https://arcgis.com",
   "oauthappid": "arcgisWebApps",
   "proxyUrl": "",
   "units": "",
@@ -10,14 +10,13 @@
   "googleAnalyticsKey": null,
   "googleAnalyticsConsent": false,
   "googleAnalyticsConsentMsg": null,
-  "header": true,
   "splash": true,
   "infoPanelOpenAtStart": false,
   "splashTitle": "Welcome!",
   "splashContent": "",
   "splashButtonText": "Explore",
   "splashOnStart": true,
-  "theme": "dark",
+  "theme": "light",
   "applySharedTheme": false,
   "home": true,
   "homePosition": {
@@ -46,7 +45,7 @@
     ]
   },
   "telemetry": {
-    "name": "instant-app",
+    "name": "countdown-app",
     "version": "1.0",
     "prod": {
       "amazon": {
@@ -72,5 +71,90 @@
         }
       }
     }
-  }
+  },
+  "introConfig": {
+    "type": "intro",
+    "enabled": true,
+    "title": "Intro Panel Title",
+    "content": "<p>Intro content</p>",
+    "buttonText": "Next",
+    "placement": 0
+  },
+  "rankingConfig": {
+    "type": "ranking",
+    "layerId": "Spring_17_data_5286",
+    "field": "Awards_S17_Cert",
+    "order": "DESC",
+    "zoomScale": 10000,
+    "countdown": {
+      "type": "countdown",
+      "enabled": true,
+      "title": "Countdown Title",
+      "featuresDisplayed": 10,
+      "placement": 1,
+      "pagingText": "Rank {current} of {total}"
+    },
+    "leaderboard": {
+      "type": "leaderboard",
+      "enabled": false,
+      "featuresDisplayed": 20,
+      "title": "Leaderboard Title",
+      "placement": 2
+    }
+  },
+  "summaryConfig": {
+    "type": "summary",
+    "enable": true,
+    "title": "Summary Title",
+    "content": "<p>Summary content</p>",
+    "placement": 3
+  },
+  "sections": [
+    {
+      "type": "summary",
+      "enable": true,
+      "title": "Summary Title",
+      "content": "<p>Summary overview sed viverra ipsum nunc. Enim sed faucibus turpis in. Faucibus turpis in eu mi bibendum nequeegestas congue quisque. Eu facilisis sed odio morbi quis commodo odio aenean. At tempor commodo ullamcorper alacus vestibulum. Quis enim lobortis scelerisque fermentum dui. Tellus in hac habitasse platea dictumstvestibulum.</p><p>Vitae auctor eu augue ut lectus arcu. Id interdum velit laoreet id donec ultrices tinciduntarcu. Et malesuada fames ac turpis. Sit amet volutpat consequat mauris nunc congue nisi. Dapibus ultrices iniaculis nunc sed. Nunc vel risus commodo viverra maecenas accumsan lacus vel. Aliquam etiam erat velitscelerisque in dictum non consectetur a. Volutpat sed cras ornare arcu dui vivamus arcu. Diam sollicitudintempor id eu nisl nunc mi ipsum. Posuere morbi leo urna molestie at elementum eu facilisis. Blandit volutpatmaecenas volutpat blandit aliquam etiam erat velit scelerisque. Dictumst vestibulum rhoncus est pellen esqueelit ullamcorper dignissim cras. Laoreet non curabitur gravida arcu ac. Malesuada fames ac turpis egestasinteger eget aliquet. Pulvinar neque laoreet suspendisse interdum. Facilisi cras fermentum odio eu. Volutpatcommodo</p>",
+      "navTitle": "Summary",
+      "icon": "text-paragraph-large",
+      "position": 3
+    },
+    {
+      "type": "intro",
+      "enabled": true,
+      "title": "Intro Panel Title",
+      "content": "<p><strong>Welcome!</strong> Vitae auctor eu augue ut lectus arcu. Id interdum velit laoreet id donec ultrices tincidunt arcu. Et malesuada fames ac turpis. Sit amet volutpat consequat mauris nunc congue nisi. Dapibus ultrices in iaculis nunc sed. Nunc vel risus commodo viverra maecenas accumsan lacus vel.</p> <p>Dolor sed viverra ipsum nunc. Enim sed faucibus turpis in. Faucibus turpis in eu mi bibendum neque egestas congue quisque. Eu facilisis sed odio morbi quis commodo odio aenean. At tempor commodo ullamcorper a lacus vestibulum. Quis enim lobortis scelerisque fermentum dui. Tellus in hac habitasse platea dictumst vestibulum. Aliquam etiam erat velit scelerisque in dictum non consectetur a. Volutpat sed cras ornare arcu dui vivamus arcu. Diam sollicitudin tempor id eu nisl nunc mi ipsum. Posuere morbi leo urna molestie at elementum eu facilisis. Blandit volutpat maecenas volutpat blandit aliquam etiam erat velit scelerisque. Dictumst vestibulum rhoncus est pellen esque elit ullamcorper dignissim cras.</p>",
+      "buttonText": "Next",
+      "navTitle": "Intro",
+      "icon": "text-paragraph-large",
+      "position": 0
+    },
+    {
+      "type": "countdown",
+      "enabled": true,
+      "title": "Countdown Title",
+      "featuresDisplayed": 10,
+      "pagingText": "Rank {current} of {total}",
+      "layerId": "Spring_17_data_5286",
+      "field": "Awards_S17_Cert",
+      "order": "DESC",
+      "zoomScale": 10000,
+      "navTitle": "Countdown",
+      "icon": "caret-double-horizontal",
+      "position": 1
+    },
+    {
+      "type": "leaderboard",
+      "enabled": false,
+      "featuresDisplayed": 20,
+      "title": "Leaderboard Title",
+      "layerId": "Spring_17_data_5286",
+      "field": "Awards_S17_Cert",
+      "order": "DESC",
+      "zoomScale": 10000,
+      "navTitle": "Leaderboard",
+      "icon": "list-number",
+      "position": 2
+    }
+  ]
 }

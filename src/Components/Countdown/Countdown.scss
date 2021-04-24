@@ -1,0 +1,63 @@
+.esri-countdown-app__countdown {
+  display: flex;
+  flex-flow: column;
+
+  calcite-checkbox {
+    --calcite-ui-text-2: #0079c1;
+    --calcite-ui-border-input: #0079c1;
+
+    svg {
+      border-radius: 50%;
+    }
+  }
+
+  &-container {
+    height: 100%;
+    border: 1px solid rgb(228, 228, 228);
+    border-radius: 4px;
+    padding: 16px;
+    background-color: #fff;
+  }
+
+  &-title {
+    color: rgb(74, 74, 74);
+    font-size: 14px;
+    font-family: Avenir-Heavy;
+    font-weight: 900;
+    margin-top: 0;
+  }
+
+  &-content {
+    color: rgb(99, 99, 99);
+    font-size: 13px;
+    font-family: Avenir-Medium;
+    font-weight: 500;
+    line-height: 16.35px;
+
+    .esri-feature__content-element {
+      padding: 0;
+    }
+
+    .esri-feature__main-container {
+      padding: 24px 0;
+    }
+
+    a {
+      word-wrap: break-word;
+    }
+  }
+
+  &-search {
+    --calcite-ui-foreground-1: #a3a3a3;
+    --calcite-ui-text-1: #fff;
+    --calcite-ui-border-1: #a3a3a3;
+
+    calcite-icon {
+      --calcite-ui-text-2: #fff;
+    }
+
+    ::placeholder {
+      color: #fff;
+    }
+  }
+}

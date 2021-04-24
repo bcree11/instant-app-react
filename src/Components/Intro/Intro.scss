@@ -1,0 +1,32 @@
+.esri-countdown-app__intro {
+  display: flex;
+  flex-flow: column;
+
+  &-container {
+    height: 100%;
+    border: 1px solid rgb(228, 228, 228);
+    border-radius: 4px;
+    padding: 16px;
+    background-color: #fff;
+  }
+
+  &-title {
+    color: rgb(74, 74, 74);
+    font-size: 14px;
+    font-family: Avenir-Heavy;
+    font-weight: 900;
+    margin-top: 0;
+  }
+
+  &-content {
+    color: rgb(99, 99, 99);
+    font-size: 13px;
+    font-family: Avenir-Medium;
+    font-weight: 500;
+    line-height: 16.35px;
+  }
+
+  &-start {
+    padding-top: 16px;
+  }
+}

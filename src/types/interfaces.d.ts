@@ -1,10 +1,3 @@
-// Header
-
-export interface HeaderState {
-  header: boolean;
-  title: string;
-}
-
 // Theme
 
 export type Theme = "dark" | "light";
@@ -77,4 +70,38 @@ interface TelemetryObj {
       id: string;
     };
   };
+}
+
+// Popup
+
+export interface PopupState {
+  content: string;
+  feature: __esri.Graphic;
+  featureIndex: number;
+}
+
+// Panel
+
+type Pane = "intro" | "countdown" | "leaderboard" | "summary";
+
+// Sections
+
+export interface SectionState {
+  type: Pane;
+  enabled: boolean;
+  title: string;
+  content?: string;
+  buttonText?: string;
+  navTitle: string;
+  icon: string;
+  position: number;
+  featuresDisplayed?: number;
+  pagingText?: string;
+  layerId?: string;
+  field?: string;
+  order?: "DESC" | "ASC";
+  zoomScale?: number;
+  enable?: boolean;
+  active?: boolean;
+  features?: __esri.Graphic[];
 }
