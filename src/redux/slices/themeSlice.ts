@@ -22,8 +22,8 @@ const themeSlice = createSlice({
       }
       state.theme = payload;
     },
-    toggleApplySharedTheme: (state) => {
-      state.applySharedTheme = !state.applySharedTheme;
+    toggleApplySharedTheme: (state, { payload }: PayloadAction<boolean>) => {
+      state.applySharedTheme = payload;
     }
   }
 });

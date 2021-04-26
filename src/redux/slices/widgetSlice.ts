@@ -18,14 +18,14 @@ const widgetSlice = createSlice({
   name: "widget",
   initialState: DEFAULT_STATE,
   reducers: {
-    toggleHomeWidget: (state) => {
-      state.home.addToMap = !state.home.addToMap;
+    toggleHomeWidget: (state, { payload }: PayloadAction<boolean>) => {
+      state.home.addToMap = payload;
     },
     updateHomeWidgetPosition: (state, { payload }: PayloadAction<WidgetPosition>) => {
       state.home.ui = payload;
     },
-    toggleMapZoomWidget: (state) => {
-      state.mapZoom.addToMap = !state.mapZoom.addToMap;
+    toggleMapZoomWidget: (state, { payload }: PayloadAction<boolean>) => {
+      state.mapZoom.addToMap = payload;
     },
     updateMapZoomWidgetPosition: (state, { payload }: PayloadAction<WidgetPosition>) => {
       state.mapZoom.ui = payload;
@@ -33,6 +33,6 @@ const widgetSlice = createSlice({
   }
 });
 
-export const { toggleHomeWidget, toggleMapZoomWidget } = widgetSlice.actions;
+export const { toggleHomeWidget, toggleMapZoomWidget, updateHomeWidgetPosition, updateMapZoomWidgetPosition } = widgetSlice.actions;
 export const widgetSelector = (state: RootState) => state.widget;
 export default widgetSlice.reducer;

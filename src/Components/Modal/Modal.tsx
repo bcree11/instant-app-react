@@ -3,7 +3,7 @@ import { fetchMessageBundle } from "@arcgis/core/intl";
 import ModalT9n from "../../t9n/Modal/resources.json";
 import { getMessageBundlePath } from "../../utils/t9nUtils";
 import { useDispatch, useSelector } from "react-redux";
-import { splashSelector, toggleOffSplash } from "../../redux/slices/splashSlice";
+import { splashSelector, toggleSplash } from "../../redux/slices/splashSlice";
 
 interface ContentProps {
   messages: typeof ModalT9n;
@@ -54,7 +54,7 @@ const Modal: FC = (): ReactElement => {
     }
     document.addEventListener("calciteModalClose", (event) => {
       event.stopImmediatePropagation();
-      dispatch(toggleOffSplash());
+      dispatch(toggleSplash(false));
     });
     fetchMessages();
   }, [dispatch]);
@@ -63,7 +63,7 @@ const Modal: FC = (): ReactElement => {
     <calcite-modal aria-labelledby="modal-title" active={splashOnStart}>
       <Header splashTitle={splashTitle} />
       <Content messages={messages} splashContent={splashContent} />
-      <Button splashButtonText={splashButtonText} closeModal={() => dispatch(toggleOffSplash())} />
+      <Button splashButtonText={splashButtonText} closeModal={() => dispatch(toggleSplash(false))} />
     </calcite-modal>
   );
 };

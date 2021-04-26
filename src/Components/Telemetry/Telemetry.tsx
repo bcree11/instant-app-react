@@ -2,7 +2,7 @@ import { FC, ReactElement, useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { telemetrySelector } from "../../redux/slices/telemetrySlice";
-import { portalSelector } from "../../redux/reducers/portal";
+import { portalSelector } from "../../redux/slices/portalSlice";
 import { themeSelector } from "../../redux/slices/themeSlice";
 import TelemetryInstance from "./telemetry/telemetry";
 import { TelemetryState, Theme } from "../../types/interfaces";

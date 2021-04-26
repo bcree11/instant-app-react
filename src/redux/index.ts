@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import map from "./reducers/map";
 import popup from "./slices/popupSlice";
-import portal from "./reducers/portal";
+import portal from "./slices/portalSlice";
 import sections from "./slices/sectionsSlice";
 import splash from "./slices/splashSlice";
 import telemetry from "./slices/telemetrySlice";
