@@ -13,7 +13,7 @@ const ConfigurationSettings: FC = (): ReactElement => {
         if (actions[key]) {
           dispatch(actions[key](e.data[key]));
         } else {
-          console.error("Error: Missing action")
+          console.error("Error: Missing action: ", key);
         }
       }
     }
