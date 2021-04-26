@@ -1,5 +1,4 @@
 import { TelemetryConfig, WidgetPosition } from "../types/interfaces";
-import { setTitle, toggleHeader } from "./slices/headerSlice";
 import { toggleApplySharedTheme, updateTheme } from "./slices/themeSlice";
 import {
   toggleHomeWidget,
@@ -23,7 +22,6 @@ export const actions = {
   googleAnalyticsConsent: (googleAnalyticsConsent: boolean) => updateGAConsent(googleAnalyticsConsent),
   googleAnalyticsConsentMsg: (googleAnalyticsConsentMsg: string) => updateGAConsentMsg(googleAnalyticsConsentMsg),
   googleAnalyticsKey: (googleAnalyticsKey: string) => updateGAKey(googleAnalyticsKey),
-  header: (header: boolean) => toggleHeader(header),
   home: (home: boolean) => toggleHomeWidget(home),
   homePosition: (homePosition: WidgetPosition) => updateHomeWidgetPosition(homePosition),
   mapZoom: (mapZoom: boolean) => toggleMapZoomWidget(mapZoom),
@@ -36,5 +34,4 @@ export const actions = {
   splashButtonText: (splashButtonText: string) => updateSplashButtonText(splashButtonText),
   telemetry: (telemetry: TelemetryConfig) => updateTelemetry(telemetry),
   theme: (theme: "dark" | "light") => updateTheme(theme),
-  title: (title: string) => setTitle(title)
 };
