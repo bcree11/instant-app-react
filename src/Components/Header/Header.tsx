@@ -1,6 +1,6 @@
 import { FC, ReactElement, useLayoutEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { portalSelector } from "../../redux/reducers/portal";
+import { portalSelector } from "../../redux/slices/portalSlice";
 import { headerSelector } from "../../redux/slices/headerSlice";
 import { themeSelector } from "../../redux/slices/themeSlice";
 import { Theme } from "../../types/interfaces";

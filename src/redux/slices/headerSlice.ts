@@ -14,17 +14,11 @@ const headerSlice = createSlice({
   name: "header",
   initialState: DEFAULT_STATE,
   reducers: {
-    toggleHeader: (state) => {
-      return {
-        ...state,
-        header: !state.header
-      };
+    toggleHeader: (state, { payload }: PayloadAction<boolean>) => {
+      state.header = payload;
     },
-    setTitle: (state, action: PayloadAction<string>) => {
-      return {
-        ...state,
-        title: action.payload
-      };
+    setTitle: (state, { payload }: PayloadAction<string>) => {
+      state.title = payload;
     }
   }
 });

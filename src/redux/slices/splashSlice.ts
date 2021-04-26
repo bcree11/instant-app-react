@@ -15,11 +15,11 @@ const splashSlice = createSlice({
   name: "splash",
   initialState: DEFAULT_STATE,
   reducers: {
-    toggleInfo: (state) => {
-      state.splash = !state.splash;
+    toggleInfo: (state, { payload }: PayloadAction<boolean>) => {
+      state.splash = payload;
     },
-    toggleOffSplash: (state) => {
-      state.splashOnStart = false;
+    toggleSplash: (state, { payload }: PayloadAction<boolean>) => {
+      state.splashOnStart = payload;
     },
     updateSplashTitle: (state, { payload }: PayloadAction<string>) => {
       state.splashTitle = payload;
@@ -35,7 +35,7 @@ const splashSlice = createSlice({
 
 export const {
   toggleInfo,
-  toggleOffSplash,
+  toggleSplash,
   updateSplashButtonText,
   updateSplashContent,
   updateSplashTitle

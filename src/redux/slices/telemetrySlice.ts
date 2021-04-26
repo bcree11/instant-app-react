@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { TelemetryState } from "../../types/interfaces";
+import { TelemetryConfig, TelemetryState } from "../../types/interfaces";
 import {
   googleAnalytics,
   googleAnalyticsKey,
@@ -21,12 +21,24 @@ const telemetrySlice = createSlice({
   name: "telemetry",
   initialState: DEFAULT_STATE,
   reducers: {
+    updateGA: (state, { payload }: PayloadAction<boolean>) => {
+      state.googleAnalytics = payload;
+    },
     updateGAConsent: (state, { payload }: PayloadAction<boolean>) => {
       state.googleAnalyticsConsent = payload;
+    },
+    updateGAConsentMsg: (state, { payload }: PayloadAction<string>) => {
+      state.googleAnalyticsConsentMsg = payload;
+    },
+    updateGAKey: (state, { payload }: PayloadAction<string>) => {
+      state.googleAnalyticsKey = payload;
+    },
+    updateTelemetry: (state, { payload }: PayloadAction<TelemetryConfig>) => {
+      state.telemetry = payload;
     }
   }
 });
 
-export const { updateGAConsent } = telemetrySlice.actions;
+export const { updateGA, updateGAConsent, updateGAConsentMsg, updateGAKey, updateTelemetry } = telemetrySlice.actions;
 export const telemetrySelector = (state: RootState) => state.telemetry;
 export default telemetrySlice.reducer;

@@ -6,6 +6,7 @@ import App from "./App";
 
 // ArcGIS Core
 import "@arcgis/core/assets/esri/themes/dark/main.css";
+import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgis/core/intl";
 
 // Calcite Components
 import "@esri/calcite-components/dist/calcite/calcite.css";
@@ -26,7 +27,7 @@ import { createStore, Store } from "redux";
 import { rootReducer, RootState } from "./redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgis/core/intl";
+import ConfigurationSettings from "./Components/ConfigurationSettings/ConfigurationSettings";
 
 (async function init(): Promise<void> {
   const base = (await createApplicationBase().load()) as ApplicationBase;
@@ -98,6 +99,7 @@ import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgi
     <React.StrictMode>
       <Provider store={store}>
         <App />
+        <ConfigurationSettings />
       </Provider>
     </React.StrictMode>,
     document.getElementById("root")

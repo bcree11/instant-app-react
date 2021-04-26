@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import base from "./reducers/base";
 import header from "./slices/headerSlice";
-import portal from "./reducers/portal";
+import portal from "./slices/portalSlice";
 import splash from "./slices/splashSlice";
 import telemetry from "./slices/telemetrySlice";
 import theme from "./slices/themeSlice";
