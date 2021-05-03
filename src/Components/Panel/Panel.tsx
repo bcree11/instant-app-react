@@ -1,24 +1,30 @@
 import { FC, ReactElement, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import { fetchMessageBundle } from "@arcgis/core/intl";
 import { getMessageBundlePath } from "../../utils/t9nUtils";
 import PanelT9n from "../../t9n/Panel/resources.json";
+
 import Intro from "../Intro/Intro";
 import Countdown from "../Countdown/Countdown";
+import Leaderboard from "../Leaderboard/Leaderboard";
 import Summary from "../Summary/Summary";
 import Paging from "../Paging/Paging";
-import View from "../View/View";
+import NextButton from "../NextButton/NextButton";
 
 import "./Panel.scss";
+
 import { SectionState } from "../../types/interfaces";
-import { useDispatch, useSelector } from "react-redux";
 import { activeToggle, sectionsSelector, updateFeatures } from "../../redux/slices/sectionsSlice";
 import { mapSelector } from "../../redux/reducers/map";
 
 const CSS = {
   base: "esri-countdown-app__panel",
   header: "esri-countdown-app__panel-header",
-  container: "esri-countdown-app__panel-container",
-  search: "esri-countdown-app__panel-search"
+  pane: "esri-countdown-app__panel-pane",
+  paneContainer: "esri-countdown-app__panel-pane-container",
+  search: "esri-countdown-app__panel-search",
+  section: "esri-countdown-app__panel-section"
 };
 
 interface ActionProps {
@@ -26,25 +32,6 @@ interface ActionProps {
   handleClick: () => void;
   active: boolean;
   title: string;
-}
-
-function updatePane(section: SectionState, index: number): ReactElement {
-  if (section.active) {
-    if (section.type === "intro") {
-      return (
-        <Intro
-          key={`${section.title}-${index}`}
-          title={section.title}
-          content={section.content}
-          position={section.position}
-        />
-      );
-    } else if (section.type === "countdown") {
-      return <Countdown key={`${section.title}-${index}`} section={section} />;
-    } else if (section.type === "summary") {
-      return <Summary key={`${section.title}-${index}`} title={section.title} content={section.content} />;
-    }
-  }
 }
 
 const Action: FC<ActionProps> = ({ active, handleClick, icon, title }): ReactElement => {
@@ -61,12 +48,39 @@ const Action: FC<ActionProps> = ({ active, handleClick, icon, title }): ReactEle
 const Panel: FC = (): ReactElement => {
   const [messages, setMessages] = useState<typeof PanelT9n>(null);
   const { sections } = useSelector(sectionsSelector);
-  const actionBar = useRef<HTMLCalciteActionBarElement>(null);
-  const shellPanel = useRef<HTMLCalciteShellPanelElement>(null);
   const map = useSelector(mapSelector);
-  const layers = useRef<__esri.Collection<__esri.Layer>>(map.layers)
-  const sectionsRef = useRef<SectionState[]>(sections)
+  const sectionEl = useRef<HTMLDivElement>(null);
+  const actionBar = useRef<HTMLCalciteActionBarElement>(null);
+  const layers = useRef<__esri.Collection<__esri.Layer>>(map.layers);
+  const sectionsRef = useRef<SectionState[]>(sections);
   const dispatch = useDispatch();
+  const pane = (section: SectionState, index: number): ReactElement => {
+    const { active, title, type } = section;
+    if (active) {
+      if (type === "intro") {
+        return <Intro key={`${title}-${index}`} section={section} />;
+      } else if (type === "countdown") {
+        return <Countdown key={`${title}-${index}`} section={section} />;
+      } else if (type === "leaderboard") {
+        return <Leaderboard key={`${title}-${index}`} section={section} />;
+      } else if (type === "summary") {
+        return <Summary key={`${title}-${index}`} section={section} />;
+      }
+    }
+  };
+  const footer = (section: SectionState, lastIndex: number): ReactElement => {
+    const { active, buttonText, position, type } = section;
+    const nextPosition = position + 1;
+    if (active && type === "intro" && position !== lastIndex) {
+      return <NextButton key={`footer-${position}`} nextPosition={nextPosition} text={buttonText} />;
+    } else if (active && type === "countdown" && position !== lastIndex) {
+      return <Paging key={`footer-${position}`} section={section} />;
+    } else if (active && type === "leaderboard" && position !== lastIndex) {
+      return <NextButton key={`footer-${position}`} nextPosition={nextPosition} text={buttonText} />;
+    } else if (active && type === "summary" && position !== lastIndex) {
+      return <NextButton key={`footer-${position}`} nextPosition={nextPosition} text={buttonText} />;
+    }
+  };
 
   useEffect(() => {
     async function fetchMessages(): Promise<void> {
@@ -76,24 +90,16 @@ const Panel: FC = (): ReactElement => {
     fetchMessages();
   }, []);
 
-  useEffect((): any => {
-    if (!document.getElementById("shell-panel-style")) {
-      const style = document.createElement("style");
-      style.innerHTML = ".content { width: 30vw!important; }";
-      style.id = "shell-panel-style";
-      shellPanel.current?.shadowRoot?.prepend(style);
-    }
-  }, []);
-
   useEffect(() => {
     async function calculateStatistics(section: SectionState) {
-      const layer = layers.current.find(({ id }) => id === section.layerId) as __esri.FeatureLayer;
+      const { field, layerId, order } = section;
+      const layer = layers.current.find(({ id }) => id === layerId) as __esri.FeatureLayer;
       if (layer && layer.type === "feature") {
         const query = layer.createQuery();
         query.where = "1=1";
-        const fieldName = section.field;
+        const fieldName = field;
         if (fieldName) {
-          query.orderByFields = [`${fieldName} ${section.order}`];
+          query.orderByFields = [`${fieldName} ${order}`];
           query.outFields = ["*"];
           const results = await layer.queryFeatures(query);
           return results.features;
@@ -113,48 +119,45 @@ const Panel: FC = (): ReactElement => {
 
   return (
     <div className={CSS.base}>
-      <calcite-shell>
-        <View />
-        <calcite-shell-panel ref={shellPanel} slot="contextual-panel" position="end">
-          <calcite-action-bar ref={actionBar} expanded="true" slot="action-bar" theme="dark">
-            <calcite-action-group layout="vertical">
-              {sections.map((action, index) => (
-                <Action
-                  key={`${action.navTitle}-${index}`}
-                  title={action.navTitle}
-                  active={action.active}
-                  icon={action.icon}
-                  handleClick={() => dispatch(activeToggle(index))}
-                />
-              ))}
-            </calcite-action-group>
-          </calcite-action-bar>
-          <div className={CSS.header}>
-            <p>Top counties in Virginia</p>
-          </div>
-          <div className={CSS.container}>
-            {sections.map((section, index) => {
-              return updatePane(section, index);
-            })}
+      <div className={CSS.header}>
+        <p>Top counties in Virginia</p>
+      </div>
+      <div className={CSS.paneContainer}>
+        <div>
+          <div ref={sectionEl} className={CSS.section}>
+            <div className={CSS.pane}>
+              {sections.map((section, index) => {
+                return pane(section, index);
+              })}
+            </div>
           </div>
           {sections.map((section, index) => {
-            return (
-              section.active &&
-              section.type === "countdown" && <Paging key={`${section.title}-${index}`} section={section} />
-            );
+            const lastIndex = sections.length - 1;
+            if (sectionEl.current) {
+              if (section.active && index === lastIndex) {
+                sectionEl.current.style.height = "100%";
+              } else {
+                sectionEl.current.style.height = "calc(100% - 55px)";
+              }
+            }
+            return footer(section, lastIndex);
           })}
-        </calcite-shell-panel>
-      </calcite-shell>
+        </div>
+        <calcite-action-bar ref={actionBar} expanded="true" theme="dark">
+          <calcite-action-group layout="vertical">
+            {sections.map((action, index) => (
+              <Action
+                key={`${action.navTitle}-${index}`}
+                title={action.navTitle}
+                active={action.active}
+                icon={action.icon}
+                handleClick={() => dispatch(activeToggle(index))}
+              />
+            ))}
+          </calcite-action-group>
+        </calcite-action-bar>
+      </div>
     </div>
-    //     {/* <calcite-input
-    //       class={CSS.search}
-    //       scale="s"
-    //       type="search"
-    //       placeholder={messages?.placeholder}
-    //       icon="search"
-    //       autocomplete="off"
-    //       theme="dark"
-    //     /> */}
   );
 };
 

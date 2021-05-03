@@ -1,8 +1,5 @@
 import { FC, ReactElement, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { mapSelector } from "../../redux/reducers/map";
-import { widgetSelector } from "../../redux/slices/widgetSlice";
-import ViewT9n from "../../t9n/View/resources.json";
 
 import Home from "@arcgis/core/widgets/Home";
 import MapView from "@arcgis/core/views/MapView";
@@ -10,10 +7,16 @@ import Zoom from "@arcgis/core/widgets/Zoom";
 
 import "./View.scss";
 
-import { fetchMessageBundle } from "@arcgis/core/intl";
+import ViewT9n from "../../t9n/View/resources.json";
 import { getMessageBundlePath } from "../../utils/t9nUtils";
+import { fetchMessageBundle } from "@arcgis/core/intl";
+
+import { mapSelector } from "../../redux/reducers/map";
+import { widgetSelector } from "../../redux/slices/widgetSlice";
 import { popupSelector } from "../../redux/slices/popupSlice";
 import { sectionsSelector } from "../../redux/slices/sectionsSlice";
+
+import Compare from "../Compare/Compare";
 
 const CSS = {
   base: "esri-countdown-app__view"
@@ -93,33 +96,33 @@ const View: FC = (): ReactElement => {
       highlight.current && highlight.current.remove();
       const feature = currentSection?.features?.[featureIndex];
       view.goTo({
-        target: [feature.geometry["x"], feature.geometry["y"]],
+        target: [feature?.geometry["x"], feature?.geometry["y"]],
         scale: 250000
       });
 
       view.popup
         .fetchFeatures({
-          x: feature.geometry["x"],
-          y: feature.geometry["y"]
+          x: feature?.geometry["x"],
+          y: feature?.geometry["y"]
         })
         .then((response) => {
           response.promisesPerLayerView.forEach((fetchResult) => {
             const layerView = fetchResult.layerView as __esri.FeatureLayerView;
-            const objectId = layerView.layer.objectIdField;
-            highlight.current = layerView.highlight(feature.attributes[objectId]);
-            // layerView.effect = {
-            //   filter: {
-            //     geometry: currentSection.features[featureIndex].geometry
-            //   },
-            //   excludedEffect: "opacity(.5)",
-            //   includedEffect: "drop-shadow(3px, 3px, 4px) brightness(300%)"
-            // } as __esri.FeatureEffect;
+            // const objectId = layerView.layer.objectIdField;
+            // highlight.current = layerView.highlight(feature.attributes[objectId]);
+            layerView.effect = {
+              filter: {
+                geometry: currentSection.features[featureIndex].geometry
+              },
+              excludedEffect: "opacity(.5)",
+              includedEffect: "drop-shadow(3px, 3px, 4px) brightness(300%)"
+            } as __esri.FeatureEffect;
           });
         });
     }
   }, [currentSection?.features, featureIndex, view]);
 
-  return <div className={CSS.base} ref={mapDiv} />;
+  return <div className={CSS.base} ref={mapDiv}><Compare /></div>;
 };
 
 export default View;

@@ -1,8 +1,13 @@
 import { FC, Fragment, ReactElement, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
+
 import { updateFeatureIndex } from "../../redux/slices/popupSlice";
 import { SectionState } from "../../types/interfaces";
 import { getPopupTitle } from "../../utils/utils";
+
+import { fetchMessageBundle } from "@arcgis/core/intl";
+import { getMessageBundlePath } from "../../utils/t9nUtils";
+import PagingT9n from "../../t9n/Paging/resources.json";
 
 import "./Paging.scss";
 
@@ -53,14 +58,23 @@ const DropdownItem: FC<DropdownItemProps> = ({ handleClick, rank, selected, titl
 };
 
 const Paging: FC<PagingProps> = ({ section }): ReactElement => {
+  const [messages, setMessages] = useState<typeof PagingT9n>(null);
   const [rank, setRank] = useState<number>(section.featuresDisplayed);
   const [titles, setTitles] = useState<string[]>([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    async function fetchMessages(): Promise<void> {
+      const data = await fetchMessageBundle(getMessageBundlePath("Paging"));
+      setMessages(data);
+    }
+    fetchMessages();
+  }, []);
+
+  useEffect(() => {
     const tmpTitles: string[] = [];
     for (let i = 0; i < section.featuresDisplayed; i++) {
-      tmpTitles.push(getPopupTitle(section.features[i]));
+      tmpTitles.push(getPopupTitle(section?.features[i]));
     }
     setTitles(tmpTitles);
   }, [section.features, section.featuresDisplayed]);
@@ -81,15 +95,27 @@ const Paging: FC<PagingProps> = ({ section }): ReactElement => {
     }
   }
 
+  function createPaginationText(): string {
+    if (section.pagingLabel) {
+      return section.pagingLabel
+        .replace(messages?.current, rank.toString())
+        .replace(messages?.total, section.featuresDisplayed.toString());
+    } else {
+      return messages?.rankLabel
+        .replace(messages?.current, rank.toString())
+        .replace(messages?.total, section.featuresDisplayed.toString());
+    }
+  }
+
   return (
-    <div className={CSS.base}>
-      {titles && titles.length && (
-        <Fragment>
+    <Fragment>
+      {titles && titles.length && messages?.rankLabel && (
+        <div className={CSS.base}>
           <calcite-button appearance="outline" icon-end="chevron-left" scale="s" onClick={rankIncrement} />
           <div>
             <calcite-dropdown max-items="5">
               <calcite-button slot="dropdown-trigger" appearance="outline" icon-end="caret-down" scale="s">
-                Rank {rank} of {section.featuresDisplayed}
+                {createPaginationText()}
               </calcite-button>
               <calcite-dropdown-group>
                 {titles.map((title, index) => {
@@ -107,9 +133,9 @@ const Paging: FC<PagingProps> = ({ section }): ReactElement => {
             </calcite-dropdown>
           </div>
           <calcite-button appearance="outline" icon-end="chevron-right" scale="s" onClick={rankDecrement} />
-        </Fragment>
+        </div>
       )}
-    </div>
+    </Fragment>
   );
 };
 

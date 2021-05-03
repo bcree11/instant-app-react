@@ -1,0 +1,23 @@
+.esri-countdown-app__compare {
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 6px 0;
+
+  calcite-panel {
+    width: 240px;
+    height: calc(100vh - 12px);
+    margin-right: 6px;
+  }
+
+  a {
+    word-wrap: break-word;
+  }
+
+  &-content {
+    padding: 16px 12px;
+
+    &.esri-feature {
+      height: 100%;
+    }
+  }
+}

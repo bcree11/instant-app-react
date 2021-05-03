@@ -76,8 +76,14 @@ interface TelemetryObj {
 
 export interface PopupState {
   content: string;
-  feature: __esri.Graphic;
+  compareGraphics: CompareGraphic[];
   featureIndex: number;
+}
+
+export interface CompareGraphic {
+  active: boolean;
+  graphic: __esri.Graphic;
+  title: string;
 }
 
 // Panel
@@ -96,7 +102,7 @@ export interface SectionState {
   icon: string;
   position: number;
   featuresDisplayed?: number;
-  pagingText?: string;
+  pagingLabel?: string;
   layerId?: string;
   field?: string;
   order?: "DESC" | "ASC";

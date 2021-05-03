@@ -1,5 +1,7 @@
 import { FC, ReactElement, useEffect, useRef } from "react";
 
+import { SectionState } from "../../types/interfaces";
+
 import "./Summary.scss";
 
 const CSS = {
@@ -10,25 +12,24 @@ const CSS = {
 };
 
 interface SummaryProps {
-  title: string;
-  content: string;
+  section: SectionState;
 }
 
-const Summary: FC<SummaryProps> = ({ title, content }): ReactElement => {
+const Summary: FC<SummaryProps> = ({ section }): ReactElement => {
   const contentEl = useRef<HTMLDivElement>(null);
   const summaryEl = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    contentEl.current.innerHTML = content;
+    contentEl.current.innerHTML = section.content;
     if (summaryEl.current.clientHeight < summaryEl.current.parentElement.clientHeight) {
       summaryEl.current.style.height = `${summaryEl.current.parentElement.clientHeight}px`;
     }
-  }, [content]);
+  }, [section.content]);
 
   return (
     <div ref={summaryEl} className={CSS.base}>
       <div className={CSS.container}>
-      <h2 className={CSS.title}>{title}</h2>
+      <h2 className={CSS.title}>{section.title}</h2>
       <div ref={contentEl} className={CSS.content} />
       </div>
     </div>
