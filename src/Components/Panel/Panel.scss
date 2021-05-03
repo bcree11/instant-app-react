@@ -4,9 +4,6 @@
     --calcite-ui-foreground-2: #00619b;
     --calcite-ui-foreground-3: #0079c1;
     --calcite-ui-text-3: #fff;
-    // height: calc(100% - 56px);
-    // position: relative;
-    // top: 56px;
   }
 
   &-header {
@@ -22,10 +19,26 @@
     }
   }
 
-  &-container {
-    position: relative;
+  &-pane-container {
+    height: calc(100% - 56px);
+    display: flex;
+    background: #f7f8f9;
+  }
+
+  &-section {
     height: 100%;
-    margin: 12px;
+    display: flex;
+    justify-content: space-between;
     overflow-y: auto;
+  }
+
+  &-pane {
+    width: 30vw;
+    margin: 12px 12px 0;
+    display: grid;
+
+    & > div {
+      padding-bottom: 12px;
+    }
   }
 }

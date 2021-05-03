@@ -1,20 +1,23 @@
 .esri-countdown-app__paging {
-    background: #2c2c2c;
-    display: flex;
-    justify-content: space-between;
-    padding: 6px;
+  height: 55px;
+  padding: 0 12px;
+  background: #2c2c2c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    calcite-button {
-      --calcite-ui-brand: #d3d3d3;
-      --calcite-ui-brand-press: #d3d3d3;
-      --calcite-ui-foreground-1: #000000;
-    }
+  calcite-button {
+    --calcite-ui-brand: #d3d3d3;
+    --calcite-ui-brand-press: #d3d3d3;
+    --calcite-ui-foreground-1: #000000;
+  }
 
-    calcite-dropdown-item {
-      background-color: #f3f3f3;
-    }
+  calcite-dropdown-item {
+    background-color: #f3f3f3;
+  }
 
-    calcite-dropdown-item:hover, calcite-dropdown-item[active] {
-      background-color: #e3f1fc;
-    }
+  calcite-dropdown-item:hover,
+  calcite-dropdown-item[active] {
+    background-color: #e3f1fc;
+  }
 }

@@ -1,0 +1,5 @@
+{
+  "current": "{current}",
+  "rankLabel": "Rank {current} of {total}",
+  "total": "{total}"
+}

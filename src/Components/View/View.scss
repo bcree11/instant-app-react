@@ -1,4 +1,10 @@
 .esri-countdown-app__view {
   width: 100%;
   height: 100%;
+  position: relative;
+
+  .esri-view-user-storage {
+    position: absolute;
+    right: 0;
+  }
 }
