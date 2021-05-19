@@ -75,6 +75,7 @@ interface TelemetryObj {
 // Popup
 
 export interface PopupState {
+  activeComparePanels: number;
   content: string;
   compareGraphics: CompareGraphic[];
   featureIndex: number;
@@ -82,7 +83,7 @@ export interface PopupState {
 
 export interface CompareGraphic {
   active: boolean;
-  graphic: __esri.Graphic;
+  graphic: IGraphic;
   title: string;
 }
 
@@ -105,9 +106,20 @@ export interface SectionState {
   pagingLabel?: string;
   layerId?: string;
   field?: string;
+  filterField?: string;
+  filterFields?: string[];
+  searchFields?: string[];
+  searchDisplayField?: string;
   order?: "DESC" | "ASC";
   zoomScale?: number;
   enable?: boolean;
   active?: boolean;
-  features?: __esri.Graphic[];
+  graphics?: IGraphic[];
+}
+
+interface IGraphic extends __esri.Graphic {
+  active?: boolean;
+  rank?: number;
+  rankTitle?: string;
+  title?: string;
 }

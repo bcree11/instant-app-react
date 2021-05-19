@@ -25,11 +25,18 @@ const NextButton: FC<NextButtonProps> = ({ nextPosition, text }): ReactElement =
   const dispatch = useDispatch();
 
   useEffect(() => {
+    let isSubscribed = true;
     async function fetchMessages(): Promise<void> {
       const data = await fetchMessageBundle(getMessageBundlePath("NextButton"));
       setMessages(data);
     }
-    fetchMessages();
+    if (isSubscribed) {
+      fetchMessages();
+    }
+
+    return () => {
+      isSubscribed = false;
+    };
   }, []);
 
   function handleButtonText() {

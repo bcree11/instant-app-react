@@ -1,0 +1,12 @@
+.esri-countdown-app__mobile-switch {
+  calcite-button[data-active="true"] {
+    --calcite-ui-brand: #e2f3ff;
+    --calcite-ui-brand-hover: #fff;
+    --calcite-ui-foreground-1: #0079c1;
+  }
+  calcite-button {
+    --calcite-ui-brand: #fff;
+    --calcite-ui-brand-hover: #e2f3ff;
+    --calcite-ui-foreground-1: #000;
+  }
+}

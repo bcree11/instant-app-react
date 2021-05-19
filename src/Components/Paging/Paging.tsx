@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 
 import { updateFeatureIndex } from "../../redux/slices/popupSlice";
 import { SectionState } from "../../types/interfaces";
-import { getPopupTitle } from "../../utils/utils";
 
 import { fetchMessageBundle } from "@arcgis/core/intl";
 import { getMessageBundlePath } from "../../utils/t9nUtils";
@@ -15,52 +14,50 @@ const CSS = {
   base: "esri-countdown-app__paging"
 };
 
+interface Ranking {
+  rank: number;
+  title: string;
+}
+
 interface PagingProps {
   section: SectionState;
 }
 
 interface DropdownItemProps {
   handleClick: () => void;
+  index: number;
   rank: number;
-  selected: boolean;
+  active: boolean;
   title: string;
 }
 
-const DropdownItem: FC<DropdownItemProps> = ({ handleClick, rank, selected, title }): ReactElement => {
+const DropdownItem: FC<DropdownItemProps> = ({ handleClick, index, rank, active, title }): ReactElement => {
   const dropdownItem = useRef<HTMLCalciteDropdownItemElement>(null);
 
   useEffect(() => {
-    if (!document.getElementById(`title-${rank}`)) {
+    if (!document.getElementById(`title-${index}`)) {
       const itemStyle = document.createElement("style");
       itemStyle.innerHTML = `:host::before {
         content: '${rank}'!important;
         opacity: 1!important;
         color: var(--calcite-ui-text-3)!important;
       }`;
-      itemStyle.id = `title-${rank}`;
+      itemStyle.id = `title-${index}`;
       dropdownItem.current.shadowRoot.prepend(itemStyle);
     }
-  }, [rank]);
+  }, [active, index, rank]);
 
-  if (selected) {
-    return (
-      <calcite-dropdown-item ref={dropdownItem} key={`${title}-${rank}`} onClick={handleClick} active>
-        {title}
-      </calcite-dropdown-item>
-    );
-  } else {
-    return (
-      <calcite-dropdown-item ref={dropdownItem} key={`${title}-${rank}`} onClick={handleClick}>
-        {title}
-      </calcite-dropdown-item>
-    );
-  }
+  return (
+    <calcite-dropdown-item ref={dropdownItem} key={`${title}-${index}`} onClick={handleClick} data-active={active}>
+      {title}
+    </calcite-dropdown-item>
+  );
 };
 
 const Paging: FC<PagingProps> = ({ section }): ReactElement => {
   const [messages, setMessages] = useState<typeof PagingT9n>(null);
   const [rank, setRank] = useState<number>(section.featuresDisplayed);
-  const [titles, setTitles] = useState<string[]>([]);
+  const [countdown, setCountdown] = useState<Ranking[]>([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -72,26 +69,35 @@ const Paging: FC<PagingProps> = ({ section }): ReactElement => {
   }, []);
 
   useEffect(() => {
-    const tmpTitles: string[] = [];
+    const tmpCountdown: Ranking[] = [];
     for (let i = 0; i < section.featuresDisplayed; i++) {
-      tmpTitles.push(getPopupTitle(section?.features[i]));
+      tmpCountdown.push({
+        rank: section?.graphics?.[i].rank,
+        title: section?.graphics?.[i].title
+      });
     }
-    setTitles(tmpTitles);
-  }, [section.features, section.featuresDisplayed]);
+    setCountdown(tmpCountdown);
+  }, [section?.graphics, section?.graphics?.length, section.featuresDisplayed]);
 
   useEffect(() => {
     dispatch(updateFeatureIndex(rank - 1));
   }, [dispatch, rank]);
 
-  function rankDecrement(): void {
-    if (rank > 1) {
-      setRank(rank - 1);
+  function rankDecrement(event): void {
+    if (event.detail < 2) {
+      if (rank > 1) {
+        setRank(rank - 1);
+      } else {
+        setRank(section.featuresDisplayed);
+      }
     }
   }
 
-  function rankIncrement(): void {
-    if (rank < section.featuresDisplayed) {
-      setRank(rank + 1);
+  function rankIncrement(event): void {
+    if (event.detail < 2) {
+      if (rank < section.featuresDisplayed) {
+        setRank(rank + 1);
+      }
     }
   }
 
@@ -109,22 +115,23 @@ const Paging: FC<PagingProps> = ({ section }): ReactElement => {
 
   return (
     <Fragment>
-      {titles && titles.length && messages?.rankLabel && (
+      {countdown && countdown.length && messages?.rankLabel && (
         <div className={CSS.base}>
           <calcite-button appearance="outline" icon-end="chevron-left" scale="s" onClick={rankIncrement} />
           <div>
-            <calcite-dropdown max-items="5">
+            <calcite-dropdown max-items="5" placement="top-start">
               <calcite-button slot="dropdown-trigger" appearance="outline" icon-end="caret-down" scale="s">
                 {createPaginationText()}
               </calcite-button>
               <calcite-dropdown-group>
-                {titles.map((title, index) => {
+                {countdown.map((item, index) => {
                   return (
                     <DropdownItem
-                      key={`${title}-${index}`}
-                      title={title}
-                      rank={index + 1}
-                      selected={index + 1 === rank}
+                      key={`${item.title}-${index}`}
+                      index={index}
+                      rank={item.rank}
+                      active={index + 1 === rank}
+                      title={item.title}
                       handleClick={() => setRank(index + 1)}
                     />
                   );

@@ -5,14 +5,16 @@
   width: 100%;
 }
 
-.esri-countdown-app__body {
-  height: 100%;
-}
+.esri-countdown-app {
+  &__body {
+    height: 100%;
+  }
 
-.esri-countdown-app__opt-out-button {
-  float: right;
-}
+  &__opt-out-button {
+    float: right;
+  }
 
-html[dir="rtl"] .esri-countdown-app__opt-out-button {
-  float: left;
+  html[dir="rtl"] &__opt-out-button {
+    float: left;
+  }
 }

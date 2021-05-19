@@ -1,0 +1,9 @@
+{
+  "map": "Map",
+  "types": {
+    "intro": "Intro",
+    "countdown": "Countdown",
+    "leaderboard": "Leaderboard",
+    "summary": "Summary"
+  }
+}

@@ -1,19 +1,18 @@
 .esri-countdown-app__leaderboard {
-
-  calcite-accordion,
-  calcite-accordion-item {
-    border-radius: 6px;
-  }
-
   calcite-checkbox {
     --calcite-ui-text-2: #0079c1;
     --calcite-ui-border-input: #0079c1;
   }
 
   &-container {
-    margin-top: 12px;
     display: grid;
     grid-gap: 8px;
+
+    calcite-accordion,
+    calcite-accordion-item {
+      border-radius: 6px;
+      --calcite-accordion-item-border: var(--calcite-ui-border-1);
+    }
   }
 
   &-content {
@@ -32,21 +31,7 @@
     }
 
     a {
-      word-wrap: break-word;
-    }
-  }
-
-  &-search {
-    --calcite-ui-foreground-1: #a3a3a3;
-    --calcite-ui-text-1: #fff;
-    --calcite-ui-border-1: #a3a3a3;
-
-    calcite-icon {
-      --calcite-ui-text-2: #fff;
-    }
-
-    ::placeholder {
-      color: #fff;
+      word-break: break-word;
     }
   }
 }

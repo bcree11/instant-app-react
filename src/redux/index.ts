@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import map from "./reducers/map";
+import mobile from "./slices/mobileSlice";
 import popup from "./slices/popupSlice";
 import portal from "./slices/portalSlice";
 import sections from "./slices/sectionsSlice";
@@ -10,6 +11,7 @@ import widget from "./slices/widgetSlice";
 
 export const rootReducer = combineReducers({
   map,
+  mobile,
   popup,
   portal,
   sections,

@@ -1,30 +1,34 @@
 import { FC, ReactElement, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import { fetchMessageBundle } from "@arcgis/core/intl";
 import Feature from "@arcgis/core/widgets/Feature";
 
+import { fetchMessageBundle } from "@arcgis/core/intl";
 import { getMessageBundlePath } from "../../utils/t9nUtils";
 import LeaderboardT9n from "../../t9n/Leaderboard/resources.json";
 
 import "./Leaderboard.scss";
 
-import { CompareGraphic, SectionState } from "../../types/interfaces";
-import { popupSelector, addCompareGraphic, toggleCompareGraphicActive } from "../../redux/slices/popupSlice";
-import { updateCurrentSection } from "../../redux/slices/sectionsSlice";
-import { getPopupTitle } from "../../utils/utils";
+import { IGraphic, SectionState } from "../../types/interfaces";
+import {
+  popupSelector,
+  addCompareGraphic,
+  toggleCompareGraphicActive,
+  updateFeatureIndex
+} from "../../redux/slices/popupSlice";
+import { sectionsSelector, updateCurrentSection } from "../../redux/slices/sectionsSlice";
+import { mobileSelector } from "../../redux/slices/mobileSlice";
 
 const CSS = {
   base: "esri-countdown-app__leaderboard",
   container: "esri-countdown-app__leaderboard-container",
   content: "esri-countdown-app__leaderboard-content",
   itemContent: "esri-countdown-app__leaderboard-item-content",
-  search: "esri-countdown-app__leaderboard-search"
+  search: "esri-countdown-app__leaderboard-search-container"
 };
 
 interface LeaderboardItemProps {
-  compareGraphics: CompareGraphic[];
-  graphic: __esri.Graphic;
+  graphic: IGraphic;
+  index: number;
   pin: string;
 }
 
@@ -32,11 +36,13 @@ interface LeaderboardProps {
   section: SectionState;
 }
 
-const LeaderboardItem: FC<LeaderboardItemProps> = ({ compareGraphics, graphic, pin }): ReactElement => {
-  const [title, setTitle] = useState<string>(null);
+const LeaderboardItem: FC<LeaderboardItemProps> = ({ graphic, index, pin }): ReactElement => {
+  const { activeComparePanels, compareGraphics } = useSelector(popupSelector);
+  const { showMobileMode } = useSelector(mobileSelector);
   const feature = useRef<__esri.Feature>(null);
   const contentEl = useRef<HTMLDivElement>(null);
   const pinCheckbox = useRef<HTMLCalciteCheckboxElement>(null);
+  const accordion = useRef<HTMLCalciteAccordionElement>(null);
   const accordionItem = useRef<HTMLCalciteAccordionItemElement>(null);
   const dispatch = useDispatch();
 
@@ -47,7 +53,7 @@ const LeaderboardItem: FC<LeaderboardItemProps> = ({ compareGraphics, graphic, p
       checkboxStyle.innerHTML = "svg { border-radius: 50% }";
       pinCheckbox.current?.shadowRoot.prepend(checkboxStyle);
     }
-  }, [pin]);
+  }, [pin, showMobileMode]);
 
   useEffect(() => {
     if (!accordionItem.current.shadowRoot.getElementById("accordion-item-style")) {
@@ -62,13 +68,9 @@ const LeaderboardItem: FC<LeaderboardItemProps> = ({ compareGraphics, graphic, p
         }`;
       accordionItem.current.shadowRoot.prepend(style);
     }
-  }, []);
-
-  useEffect(() => {
-    if (graphic) {
-      if (feature.current) {
-        feature.current.graphic = graphic;
-      } else {
+    accordionItem.current.addEventListener("click", (e) => {
+      const node = e.target as HTMLCalciteAccordionItemElement;
+      if (node.active && !feature.current) {
         feature.current = new Feature({
           container: contentEl.current,
           graphic,
@@ -77,43 +79,58 @@ const LeaderboardItem: FC<LeaderboardItemProps> = ({ compareGraphics, graphic, p
           }
         });
       }
-      setTitle(getPopupTitle(graphic));
-    }
-  }, [graphic]);
+      if (node.active) {
+        dispatch(updateFeatureIndex(index));
+      }
+    });
+  }, [dispatch, graphic, index]);
 
   useEffect(() => {
     if (graphic) {
-      const graphicTitle = getPopupTitle(graphic);
       if (pinCheckbox.current) {
-        pinCheckbox.current.checked = false;
+        let checked = false;
         for (const compare of compareGraphics) {
-          if (compare.active && compare.title === graphicTitle) {
-            pinCheckbox.current.checked = true;
+          if (compare.active && compare.title === graphic.title) {
+            checked = true;
           }
         }
+        if (!checked && activeComparePanels === 2) {
+          pinCheckbox.current.disabled = true;
+        } else {
+          pinCheckbox.current.disabled = false;
+        }
+        pinCheckbox.current.checked = checked;
       }
     }
-  }, [compareGraphics, graphic, pin]);
+  }, [activeComparePanels, compareGraphics, graphic, pin]);
+
+  useEffect(() => {
+    if (graphic.active) {
+      accordion.current.style.display = "block";
+    } else {
+      accordion.current.style.display = "none";
+    }
+  }, [graphic.active]);
 
   function handleCheckboxClick(): void {
     if (pinCheckbox.current.checked) {
       const compare = {
         active: true,
         graphic: feature.current.graphic,
-        title
+        title: graphic.title
       };
       dispatch(addCompareGraphic(compare));
     } else {
-      dispatch(toggleCompareGraphicActive(title));
+      dispatch(toggleCompareGraphicActive(graphic.title));
     }
   }
 
   return (
-    <calcite-accordion scale="l">
-      <calcite-accordion-item ref={accordionItem} item-title={title}>
+    <calcite-accordion ref={accordion} scale={showMobileMode ? "m" : "l"}>
+      <calcite-accordion-item ref={accordionItem} item-title={graphic.rankTitle}>
         <div className={CSS.itemContent}>
-          {pin && (
-            <calcite-checkbox ref={pinCheckbox} scale="s" onClick={handleCheckboxClick}>
+          {!showMobileMode && pin && (
+            <calcite-checkbox ref={pinCheckbox} scale="s" onClick={handleCheckboxClick} onKeydown={handleCheckboxClick}>
               {pin}
             </calcite-checkbox>
           )}
@@ -126,8 +143,7 @@ const LeaderboardItem: FC<LeaderboardItemProps> = ({ compareGraphics, graphic, p
 
 const Leaderboard: FC<LeaderboardProps> = ({ section }): ReactElement => {
   const [messages, setMessages] = useState<typeof LeaderboardT9n>(null);
-  const leaderboard = useRef<__esri.Graphic[]>([]);
-  const { compareGraphics } = useSelector(popupSelector);
+  const { filteredGraphics } = useSelector(sectionsSelector)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -136,37 +152,19 @@ const Leaderboard: FC<LeaderboardProps> = ({ section }): ReactElement => {
       setMessages(data);
     }
     fetchMessages();
-    dispatch(updateCurrentSection(section.position));
-  }, [dispatch, section.position]);
+  }, []);
 
   useEffect(() => {
-    for (let i = 0; i < section.featuresDisplayed; i++) {
-      leaderboard.current.push(section.features[i]);
-    }
-  }, [section.features, section.featuresDisplayed]);
+    section?.graphics?.forEach((graphic) => (graphic.active = true));
+    dispatch(updateCurrentSection(section.position));
+  }, [dispatch, section?.graphics, section?.graphics?.length, section.position]);
 
   return (
     <div className={CSS.base}>
-      <calcite-input
-        class={CSS.search}
-        scale="s"
-        type="search"
-        placeholder={messages?.searchPlaceholder}
-        icon="search"
-        autocomplete="off"
-        theme="dark"
-      />
       <div className={CSS.container}>
-        {leaderboard.current.map((graphic, index) => {
-          return (
-            <LeaderboardItem
-              key={`leaderboard-item-${index}`}
-              compareGraphics={compareGraphics}
-              graphic={graphic}
-              pin={messages?.pin}
-            />
-          );
-        })}
+        {filteredGraphics.map((graphic, index) => (
+          <LeaderboardItem key={`leaderboard-item-${index}`} index={index} graphic={graphic} pin={messages?.pin} />
+        ))}
       </div>
     </div>
   );

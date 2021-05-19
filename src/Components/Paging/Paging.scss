@@ -17,7 +17,7 @@
   }
 
   calcite-dropdown-item:hover,
-  calcite-dropdown-item[active] {
+  calcite-dropdown-item[data-active="true"] {
     background-color: #e3f1fc;
   }
 }

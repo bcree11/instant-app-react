@@ -1,6 +1,8 @@
 import { FC, ReactElement, useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 
 import { SectionState } from "../../types/interfaces";
+import { updateCurrentSection } from "../../redux/slices/sectionsSlice";
 
 import "./Intro.scss";
 
@@ -19,10 +21,12 @@ interface IntroProps {
 const Intro: FC<IntroProps> = ({ section }): ReactElement => {
   const contentEl = useRef<HTMLDivElement>(null);
   const introEl = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     contentEl.current.innerHTML = section.content;
-  }, [section.content]);
+    dispatch(updateCurrentSection(section.position));
+  }, [dispatch, section.content, section.position]);
 
   return (
     <div ref={introEl} className={CSS.base}>

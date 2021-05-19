@@ -6,6 +6,7 @@
   "oauthappid": "arcgisWebApps",
   "proxyUrl": "",
   "units": "",
+  "header": "Custom Header",
   "googleAnalytics": false,
   "googleAnalyticsKey": null,
   "googleAnalyticsConsent": false,
@@ -101,7 +102,7 @@
       "layerId": "Spring_17_data_5286",
       "field": "Awards_S17_Cert",
       "order": "DESC",
-      "zoomScale": 10000,
+      "zoomScale": 250000,
       "navTitle": "Countdown",
       "icon": "caret-double-horizontal",
       "position": 1
@@ -113,11 +114,14 @@
       "title": "Leaderboard Title",
       "layerId": "Spring_17_data_5286",
       "field": "Awards_S17_Cert",
+      "filterField": "City",
+      "searchFields": ["College", "City", "State"],
+      "searchDisplayField": "College",
       "order": "DESC",
-      "zoomScale": 10000,
+      "zoomScale": 250000,
       "navTitle": "Leaderboard",
       "icon": "list-number",
-      "buttonText": "Leaderboard Next",
+      "buttonText": "Custom next text",
       "position": 2
     }
   ]
