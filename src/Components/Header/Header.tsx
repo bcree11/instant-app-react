@@ -9,21 +9,21 @@ import { activeToggle, sectionsSelector } from "../../redux/slices/sectionsSlice
 
 import "./Header.scss";
 import { mobileSelector } from "../../redux/slices/mobileSlice";
+import { configParamsSelector } from "../../redux/slices/configParamsSlice";
 
 const CSS = {
   base: "esri-countdown-app__header",
+  container: "esri-countdown-app__header-container",
   dropdownContainer: "esri-countdown-app__header-dropdown-container"
 };
 
 interface DropdownItemProps {
-  handleClick: () => void;
   index: number;
   icon: string;
-  active: boolean;
   title: string;
 }
 
-const DropdownItem: FC<DropdownItemProps> = ({ handleClick, icon, index, active, title }): ReactElement => {
+const DropdownItem: FC<DropdownItemProps> = ({ icon, index, title }): ReactElement => {
   const dropdownItem = useRef<HTMLCalciteDropdownItemElement>(null);
 
   useEffect(() => {
@@ -37,23 +37,17 @@ const DropdownItem: FC<DropdownItemProps> = ({ handleClick, icon, index, active,
     }
   }, [index]);
 
-    return (
-      <calcite-dropdown-item
-        ref={dropdownItem}
-        key={`${title}-${index}`}
-        onClick={handleClick}
-        onKeypress={handleClick}
-        icon-start={icon}
-        data-active={active}
-      >
-        {title}
-      </calcite-dropdown-item>
-    );
+  return (
+    <calcite-dropdown-item ref={dropdownItem} key={`${title}-${index}`} icon-start={icon} data-position={index}>
+      {title}
+    </calcite-dropdown-item>
+  );
 };
 
 const Header: FC = (): ReactElement => {
   const [messages, setMessages] = useState<typeof HeaderT9n>(null);
-  const { currentSection, sections } = useSelector(sectionsSelector);
+  const { title } = useSelector(configParamsSelector);
+  const { sections } = useSelector(sectionsSelector);
   const { showMobileMode } = useSelector(mobileSelector);
   const dropdown = useRef<HTMLCalciteDropdownElement>(null);
   const dispatch = useDispatch();
@@ -67,37 +61,31 @@ const Header: FC = (): ReactElement => {
   }, []);
 
   useEffect(() => {
-    if (!dropdown.current?.shadowRoot?.getElementById("header-dropdown-style")) {
-      const style = document.createElement("style");
-      style.id = "header-dropdown-style";
-      style.innerHTML = `.calcite-dropdown-wrapper { transform: translate(-6px, 50px)!important; }`;
-      dropdown.current?.shadowRoot.prepend(style);
-    }
-    // dropdown.current?.addEventListener("")
-  }, [showMobileMode]);
+    dropdown.current?.addEventListener("calciteDropdownSelect", () => {
+      const item = dropdown.current.selectedItems?.[0];
+      if (item) {
+        dispatch(activeToggle(parseInt(item.dataset?.position)));
+      }
+    });
+  }, [dispatch, showMobileMode]);
 
   return (
     <div className={CSS.base}>
       {showMobileMode && (
         <div className={CSS.dropdownContainer}>
-          <calcite-dropdown ref={dropdown}>
-            <calcite-button slot="dropdown-trigger" label={messages?.menu} icon-start="hamburger" />
+          <calcite-dropdown ref={dropdown} type="hover">
+            <calcite-button slot="dropdown-trigger" label={messages?.menu} icon-start="hamburger" scale="l" />
             <calcite-dropdown-group>
               {sections.map((item, index) => (
-                <DropdownItem
-                  key={`${item.navTitle}-${index}`}
-                  icon={item.icon}
-                  index={index}
-                  active={index === currentSection?.position}
-                  title={item.title}
-                  handleClick={() => dispatch(activeToggle(index))}
-                />
+                <DropdownItem key={`${item.navTitle}-${index}`} icon={item.icon} index={index} title={item.title} />
               ))}
             </calcite-dropdown-group>
           </calcite-dropdown>
         </div>
       )}
-      <p>Top counties in Virginia</p>
+      <div className={CSS.container}>
+        <p>{title}</p>
+      </div>
     </div>
   );
 };

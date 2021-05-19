@@ -2,13 +2,11 @@ import { FC, ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import View from "./Components/View/View";
-import Modal from "./Components/Modal/Modal";
 import Telemetry from "./Components/Telemetry/Telemetry";
 import Panel from "./Components/Panel/Panel";
 
 import "./App.scss";
 
-import { splashSelector } from "./redux/slices/splashSlice";
 import { mobileSelector, toggleShowMobileMode } from "./redux/slices/mobileSlice";
 
 const CSS = {
@@ -18,7 +16,6 @@ const CSS = {
 
 const App: FC = (): ReactElement => {
   const [isMounted, setIsMounted] = useState<boolean>(null);
-  const { splash, splashOnStart } = useSelector(splashSelector);
   const { showMobileMode } = useSelector(mobileSelector);
   const dispatch = useDispatch();
 
@@ -39,7 +36,6 @@ const App: FC = (): ReactElement => {
             <Panel />
           </div>
         )}
-        {false && splash && splashOnStart && <Modal />}
         <Telemetry />
       </div>
     </div>

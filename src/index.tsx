@@ -29,7 +29,7 @@ import { rootReducer, RootState } from "./redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import ConfigurationSettings from "./Components/ConfigurationSettings/ConfigurationSettings";
-import { SectionState } from "./types/interfaces";
+import { ConfigState, SectionState } from "./types/interfaces";
 
 (async function init(): Promise<void> {
   const base = (await createApplicationBase().load()) as ApplicationBase;
@@ -60,36 +60,13 @@ import { SectionState } from "./types/interfaces";
   const initialState = {
     map,
     portal: base.portal,
+    config: config as ConfigState,
     sections: {
       sections: updateSections(config.sections as SectionState[])
-    },
-    splash: {
-      splash: config.splash,
-      splashTitle: config.splashTitle,
-      splashContent: config.splashContent,
-      splashButtonText: config.splashButtonText,
-      splashOnStart: config.splashOnStart
-    },
-    telemetry: {
-      googleAnalytics: config.googleAnalytics,
-      googleAnalyticsKey: config.googleAnalyticsKey,
-      googleAnalyticsConsent: config.googleAnalyticsConsent,
-      googleAnalyticsConsentMsg: config.googleAnalyticsConsentMsg,
-      telemetry: config.telemetry
     },
     theme: {
       theme: config.theme,
       applySharedTheme: config.applySharedTheme
-    },
-    widget: {
-      home: {
-        addToMap: config.home,
-        ui: config.homePosition
-      },
-      mapZoom: {
-        addToMap: config.mapZoom,
-        ui: config.mapZoomPosition
-      }
     }
   } as RootState;
 

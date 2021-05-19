@@ -7,16 +7,6 @@ export interface ThemeState {
   applySharedTheme: boolean;
 }
 
-// Splash
-
-export interface SplashState {
-  splash: boolean;
-  splashOnStart: boolean;
-  splashTitle: string;
-  splashContent: string;
-  splashButtonText: string;
-}
-
 // Widget
 
 type Position =
@@ -33,16 +23,6 @@ type Position =
 interface WidgetPosition {
   position: Position;
   index: number;
-}
-
-interface Widget {
-  addToMap: boolean;
-  ui: WidgetPosition;
-}
-
-export interface WidgetState {
-  home: Widget;
-  mapZoom: Widget;
 }
 
 // Telemetry
@@ -122,4 +102,21 @@ interface IGraphic extends __esri.Graphic {
   rank?: number;
   rankTitle?: string;
   title?: string;
+}
+
+// Config
+
+export interface ConfigState {
+  home: boolean;
+  homePosition: WidgetPosition;
+  mapZoom: boolean;
+  mapZoomPosition: WidgetPosition;
+  legend: boolean;
+  legendPosition: WidgetPosition;
+  googleAnalytics: boolean;
+  googleAnalyticsConsent: boolean;
+  googleAnalyticsConsentMsg: string;
+  googleAnalyticsKey: string;
+  telemetry: TelemetryConfig;
+  title: string;
 }

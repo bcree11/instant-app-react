@@ -1,22 +1,16 @@
 {
   "appid": "",
-  "title": "Instant App",
   "webmap": "default",
+  "title": "",
   "portalUrl": "",
   "oauthappid": "arcgisWebApps",
   "proxyUrl": "",
   "units": "",
-  "header": "Custom Header",
+  "header": null,
   "googleAnalytics": false,
   "googleAnalyticsKey": null,
   "googleAnalyticsConsent": false,
   "googleAnalyticsConsentMsg": null,
-  "splash": true,
-  "infoPanelOpenAtStart": false,
-  "splashTitle": "Welcome!",
-  "splashContent": "",
-  "splashButtonText": "Explore",
-  "splashOnStart": true,
   "theme": "light",
   "applySharedTheme": false,
   "home": true,
@@ -28,6 +22,11 @@
   "mapZoomPosition": {
     "position": "top-left",
     "index": 1
+  },
+  "legend": false,
+  "legendPosition": {
+    "position": "bottom-left",
+    "index": 0
   },
   "helperServices": {
     "geometry": {

@@ -1,10 +1,12 @@
 import { FC, ReactElement, useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-import { telemetrySelector } from "../../redux/slices/telemetrySlice";
 import { portalSelector } from "../../redux/slices/portalSlice";
 import { themeSelector } from "../../redux/slices/themeSlice";
+import { configParamsSelector } from "../../redux/slices/configParamsSlice";
+
 import TelemetryInstance from "./telemetry/telemetry";
+
 import { TelemetryState, Theme } from "../../types/interfaces";
 
 const CSS = {
@@ -44,7 +46,7 @@ const Telemetry: FC = (): ReactElement => {
     googleAnalyticsConsent,
     googleAnalyticsConsentMsg,
     telemetry
-  } = useSelector(telemetrySelector);
+  } = useSelector(configParamsSelector);
   const { theme } = useSelector(themeSelector);
   const portal = useSelector(portalSelector);
   const [initTelemetry, setInitTelemetry] = useState<boolean>(false);

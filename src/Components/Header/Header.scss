@@ -1,11 +1,11 @@
 .esri-countdown-app__header {
+  height: 56px;
   display: flex;
   background: #2c2c2c;
 
   &-dropdown-container {
     display: flex;
     align-items: center;
-    padding-left: 6px;
 
     calcite-dropdown {
       --calcite-border-radius: 0px;
@@ -29,12 +29,17 @@
     }
   }
 
-  p {
-    color: #fff;
-    font-family: Avenir-Roman;
-    font-size: 18px;
-    margin: 0;
-    padding: 16px 0 16px 10px;
-    line-height: 24px;
+  &-container {
+    background: #2c2c2c;
+    width: 100%;
+
+    p {
+      color: #fff;
+      font-family: Avenir-Roman;
+      font-size: 18px;
+      margin: 0;
+      padding: 16px 0 16px 10px;
+      line-height: 24px;
+    }
   }
 }

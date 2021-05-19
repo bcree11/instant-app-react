@@ -1,10 +1,10 @@
-import { FC, ReactElement, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { FC, ReactElement, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { fetchMessageBundle } from "@arcgis/core/intl";
 import Home from "@arcgis/core/widgets/Home";
 import MapView from "@arcgis/core/views/MapView";
-import Zoom from "@arcgis/core/widgets/Zoom";
+import MapZoom from "@arcgis/core/widgets/Zoom";
 
 import "./View.scss";
 
@@ -12,13 +12,14 @@ import ViewT9n from "../../t9n/View/resources.json";
 import { getMessageBundlePath } from "../../utils/t9nUtils";
 
 import { mapSelector } from "../../redux/reducers/map";
-import { widgetSelector } from "../../redux/slices/widgetSlice";
 import { popupSelector } from "../../redux/slices/popupSlice";
 import { sectionsSelector } from "../../redux/slices/sectionsSlice";
 
 import Compare from "../Compare/Compare";
 import { mobileSelector } from "../../redux/slices/mobileSlice";
 import Search from "@arcgis/core/widgets/Search";
+import { configParamsSelector } from "../../redux/slices/configParamsSlice";
+import { WidgetPosition } from "../../types/interfaces";
 
 const CSS = {
   base: "esri-countdown-app__view"
@@ -26,7 +27,7 @@ const CSS = {
 
 const View: FC = (): ReactElement => {
   const { featureIndex } = useSelector(popupSelector);
-  const { home, mapZoom } = useSelector(widgetSelector);
+  const { home, homePosition, mapZoom, mapZoomPosition } = useSelector(configParamsSelector);
   const { currentSection } = useSelector(sectionsSelector);
   const { showMobileMode } = useSelector(mobileSelector);
   const map = useSelector(mapSelector);
@@ -38,46 +39,6 @@ const View: FC = (): ReactElement => {
   const scale = useRef<number>(null);
   const mapDiv = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
-  const handleHome = useCallback((): void => {
-    const homeWidget = view.current.ui.find("home");
-    if (home.addToMap) {
-      if (homeWidget) {
-        view.current.ui.move({
-          component: homeWidget,
-          position: home.ui.position,
-          index: home.ui.index
-        });
-        return;
-      }
-      view.current.ui.add({
-        component: new Home({ view: view.current, id: "home" }),
-        position: home.ui.position,
-        index: home.ui.index
-      });
-    } else {
-      view.current.ui.remove(homeWidget);
-    }
-  }, [home, view]);
-  const handleMapZoom = useCallback((): void => {
-    const zoomWidget = view.current.ui.find("mapZoom");
-    if (mapZoom.addToMap) {
-      if (zoomWidget) {
-        view.current.ui.move({
-          component: zoomWidget,
-          position: mapZoom.ui.position,
-          index: mapZoom.ui.index
-        });
-        return;
-      }
-      view.current.ui.add({
-        component: new Zoom({ view: view.current, id: "mapZoom" }),
-        position: mapZoom.ui.position,
-        index: mapZoom.ui.index
-      });
-    } else {
-      view.current.ui.remove(zoomWidget);
-    }
-  }, [mapZoom, view]);
 
   useLayoutEffect(() => {
     async function fetchMessages(): Promise<void> {
@@ -93,8 +54,6 @@ const View: FC = (): ReactElement => {
     view.current.ui.remove("zoom");
     view.current.when(() => {
       scale.current = view.current.scale;
-      console.log('view.current.scale ',view.current.scale);
-
     });
     view.current.on("layerview-create", () => {
       setViewReady(true);
@@ -102,9 +61,41 @@ const View: FC = (): ReactElement => {
   }, [dispatch, map, mapDiv]);
 
   useLayoutEffect(() => {
-    handleHome();
-    handleMapZoom();
-  }, [handleHome, handleMapZoom, home.addToMap, mapZoom.addToMap]);
+    function handleWidget(visibility: boolean, position: WidgetPosition, classRef: string, constructorFunc: Function) {
+      let widget = view.current.ui.find(classRef);
+      if (visibility) {
+        if (widget) {
+          view.current.ui.move({
+            component: widget,
+            ...position
+          } as __esri.UIMoveComponent);
+          return;
+        }
+        widget = constructorFunc();
+        view.current.ui.add({
+          component: widget,
+          ...position
+        } as __esri.UIAddComponent);
+      } else {
+        view.current.ui.remove(widget);
+      }
+    }
+    handleWidget(mapZoom, mapZoomPosition as WidgetPosition, "mapZoom", () => {
+      return new MapZoom({ view: view.current, id: "mapZoom" });
+    });
+    handleWidget(home, homePosition as WidgetPosition, "home", () => {
+      return new Home({ view: view.current, id: "home" });
+    });
+  }, [
+    home,
+    homePosition,
+    homePosition?.index,
+    homePosition?.position,
+    mapZoom,
+    mapZoomPosition,
+    mapZoomPosition?.index,
+    mapZoomPosition?.position
+  ]);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -112,8 +103,6 @@ const View: FC = (): ReactElement => {
     if (isSubscribed && viewReady) {
       view.current.popup.autoCloseEnabled = true;
       const checkType = currentSection?.type === "countdown" || currentSection?.type === "leaderboard";
-      console.log('view.current.layerViews: ',view.current.layerViews);
-
       if (checkType) {
         layerView.current = view.current.layerViews.find((lv) => {
           return lv.layer.id === currentSection.layerId;
@@ -132,8 +121,6 @@ const View: FC = (): ReactElement => {
             includedEffect: "drop-shadow(3px, 3px, 4px) brightness(300%)"
           } as __esri.FeatureEffect;
         }
-        console.log("136 goto");
-
         view.current.goTo({
           target: [graphic?.geometry["x"], graphic?.geometry["y"]],
           scale: currentSection.zoomScale ?? 200000
@@ -149,22 +136,15 @@ const View: FC = (): ReactElement => {
         layerView.current.effect = null;
       }
     };
-  }, [
-    currentSection,
-    featureIndex,
-    showMobileMode,
-    viewReady
-  ]);
+  }, [currentSection, featureIndex, showMobileMode, viewReady]);
 
   useEffect(() => {
     let isSubscribed = true;
     if (isSubscribed && currentSection?.type === "leaderboard" && viewReady) {
-      console.log('view.current.layerViews: ',view.current.layerViews);
       const { searchDisplayField, searchFields, zoomScale } = currentSection;
       view.current.popup.autoCloseEnabled = true;
       if (layerView.current) {
         layerView.current.queryExtent().then((response) => {
-          console.log("response", response);
           if (response?.extent) {
             view.current.goTo(response.extent);
           } else {
