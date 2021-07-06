@@ -1,24 +1,55 @@
 .esri-instant-app__header {
+  min-height: 56px;
   display: flex;
-  align-items: center;
-  padding-left: 10px;
-  height: 5%;
+  background: var(--header-background);
 
-  h1 {
+  &-dropdown-container {
     display: flex;
     align-items: center;
-    font-weight: normal;
-    font-size: 1.2rem;
 
-    a {
-      display: inline-block;
-      margin-right: 3px;
+    calcite-dropdown {
+      --calcite-border-radius: 0px;
+
+      calcite-button {
+        --calcite-ui-brand: var(--header-background);
+        --calcite-ui-brand-hover: var(--header-background);
+        --calcite-ui-border-2: var(--header-background);
+        --calcite-ui-text-1: var(--header-color);
+        --calcite-ui-foreground-1: var(--header-color);
+      }
+      calcite-dropdown-item:hover,
+      calcite-dropdown-item[data-active="true"] {
+        background-color: #e4e4e4;
+      }
+
+      calcite-dropdown-item {
+        padding: 0.75rem 1rem 0.75rem 0.75rem;
+        --calcite-ui-brand: var(--header-background);
+      }
     }
+  }
+
+  &-container {
+    display: flex;
+    align-items: center;
 
     img {
-      width: 30px;
-      height: 30px;
-      margin-right: 3px;
+      height: 42px;
+      padding-left: 10px;
+    }
+  }
+
+  &-title-container {
+    width: 100%;
+    display: flex;
+
+    a, h1 {
+      color: var(--header-color);
+      font-family: Avenir-Roman;
+      font-size: 18px;
+      margin: 0;
+      padding: 16px 10px;
+      line-height: 24px;
     }
   }
 }

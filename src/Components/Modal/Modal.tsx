@@ -1,9 +1,9 @@
-import { FC, ReactElement, useEffect, useState } from "react";
-import { fetchMessageBundle } from "@arcgis/core/intl";
+import { FC, ReactElement, useRef } from "react";
+import { useSelector } from "react-redux";
+
 import ModalT9n from "../../t9n/Modal/resources.json";
-import { getMessageBundlePath } from "../../utils/t9nUtils";
-import { useDispatch, useSelector } from "react-redux";
-import { splashSelector, toggleSplash } from "../../redux/slices/splashSlice";
+import { configParamsSelector } from "../../redux/slices/configParamsSlice";
+import { useMessages } from "../../hooks/useMessages";
 
 interface ContentProps {
   messages: typeof ModalT9n;
@@ -12,11 +12,6 @@ interface ContentProps {
 
 interface HeaderProps {
   splashTitle: string;
-}
-
-interface ButtonProps {
-  splashButtonText: string;
-  closeModal: Function;
 }
 
 function removePTags(splashContent: string): string {
@@ -36,34 +31,23 @@ const Header: FC<HeaderProps> = ({ splashTitle }): ReactElement => (
   </h2>
 );
 
-const Button: FC<ButtonProps> = ({ splashButtonText, closeModal }): ReactElement => (
-  <calcite-button onClick={closeModal} slot="primary" width="full">
-    {splashButtonText}
-  </calcite-button>
-);
-
 const Modal: FC = (): ReactElement => {
-  const { splashButtonText, splashTitle, splashContent, splashOnStart } = useSelector(splashSelector);
-  const [messages, setMessages] = useState<typeof ModalT9n>(null);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    async function fetchMessages(): Promise<void> {
-      const data = await fetchMessageBundle(getMessageBundlePath("Modal"));
-      setMessages(data);
-    }
-    document.addEventListener("calciteModalClose", (event) => {
-      event.stopImmediatePropagation();
-      dispatch(toggleSplash(false));
-    });
-    fetchMessages();
-  }, [dispatch]);
+  const { splashButtonText, splashTitle, splashContent, splashOnStart, theme } = useSelector(configParamsSelector);
+  const messages: typeof ModalT9n = useMessages("Modal");
+  const calciteModal = useRef<HTMLCalciteModalElement>(null);
 
   return (
-    <calcite-modal aria-labelledby="modal-title" active={splashOnStart}>
+    <calcite-modal
+      ref={calciteModal}
+      class={theme === "light" ? "calcite-theme-light" : "calcite-theme-dark"}
+      aria-labelledby="modal-title"
+      active={splashOnStart}
+    >
       <Header splashTitle={splashTitle} />
       <Content messages={messages} splashContent={splashContent} />
-      <Button splashButtonText={splashButtonText} closeModal={() => dispatch(toggleSplash(false))} />
+      <calcite-button onClick={() => (calciteModal.current.active = false)} slot="primary" width="full">
+        {splashButtonText}
+      </calcite-button>
     </calcite-modal>
   );
 };

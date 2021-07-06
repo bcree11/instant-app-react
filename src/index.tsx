@@ -7,6 +7,7 @@ import App from "./App";
 // ArcGIS Core
 import "@arcgis/core/assets/esri/themes/dark/main.css";
 import { registerMessageBundleLoader, createJSONLoader, setLocale } from "@arcgis/core/intl";
+import PortalItem from "@arcgis/core/portal/PortalItem";
 
 // Calcite Components
 import "@esri/calcite-components/dist/calcite/calcite.css";
@@ -17,6 +18,8 @@ import { applyPolyfills, defineCustomElements } from "@esri/calcite-components/d
 import applicationBaseJSON from "./config/applicationBase.json";
 import applicationJSON from "./config/application.json";
 import ApplicationBase from "./ApplicationBase/ApplicationBase";
+import { createMapFromItem } from "./ApplicationBase/support/itemUtils";
+import { setPageTitle } from "./ApplicationBase/support/domHelper";
 
 // Service Worker
 import * as serviceWorker from "./serviceWorker";
@@ -28,10 +31,34 @@ import { rootReducer, RootState } from "./redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import ConfigurationSettings from "./Components/ConfigurationSettings/ConfigurationSettings";
+import { ConfigState } from "./types/interfaces";
 
 (async function init(): Promise<void> {
-  const base = (await createApplicationBase().load()) as ApplicationBase;
+  try {
+    const base = (await createApplicationBase().load()) as ApplicationBase;
+    handleApplicationBaseLoad(base);
+  } catch (message) {
+    if (message === "identity-manager:not-authorized") {
+      const root = document.getElementById("root");
+      root.classList.add("app-error");
+      root.innerHTML = `<h1>Not Licensed</h1><p>Your account is not licensed to use Configurable Apps that are not public. Please ask your organization administrator to assign you a user type that includes Essential Apps or an add-on Essential Apps license.</p>`;
+    } else if (message?.name === "identity-manager:not-authorized") {
+      const root = document.getElementById("root");
+      root.classList.add("app-error");
+      root.innerHTML = `<p>${message?.message}</p>`;
+    } else if (message?.error === "application:origin-other") {
+      const urlPath = new URL(window.location.href);
+      const origin = urlPath.origin;
+      document.location.href = `${origin}/apps/shared/origin/index.html?appUrl=${message.appUrl}`;
+    } else if (message?.message === "Item does not exist or is inaccessible.") {
+      const root = document.getElementById("root");
+      root.classList.add("app-error");
+      root.innerHTML = `<p>${message?.message}</p>`;
+    }
+  }
+})();
 
+async function handleApplicationBaseLoad(base: ApplicationBase) {
   registerMessageBundleLoader(
     createJSONLoader({
       pattern: `${process.env.PUBLIC_URL}/`,
@@ -42,47 +69,38 @@ import ConfigurationSettings from "./Components/ConfigurationSettings/Configurat
 
   setLocale(base.locale);
 
-  const config = (window.location !== window.parent.location
-    ? { ...base.config, ...base.config.draft }
-    : { ...base.config }) as typeof applicationJSON;
+  if (base.direction) {
+    document.querySelector("html").setAttribute("dir", base.direction);
+  }
+
+  const config = (
+    window.location !== window.parent.location ? { ...base.config, ...base.config.draft } : { ...base.config }
+  ) as typeof applicationJSON;
 
   updateJSAPIStyles(config.theme as "light" | "dark");
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const mapId = urlParams.get("webmap");
+  let item: __esri.PortalItem;
+
+  if (mapId) {
+    item = await new PortalItem({
+      portal: base.portal,
+      id: mapId
+    }).load();
+  } else {
+    const { webMapItems } = base.results;
+    item = webMapItems[0].value;
+  }
+
+  const appProxies = item?.applicationProxies ? item.applicationProxies : null;
+  const map = await createMapFromItem({ item, appProxies });
+  setPageTitle(config.title ? config.title : map?.portalItem?.title ?? "");
 
   const initialState = {
-    base,
-    header: {
-      header: config.header,
-      title: config.title
-    },
+    map,
     portal: base.portal,
-    splash: {
-      splash: config.splash,
-      splashTitle: config.splashTitle,
-      splashContent: config.splashContent,
-      splashButtonText: config.splashButtonText,
-      splashOnStart: config.splashOnStart
-    },
-    telemetry: {
-      googleAnalytics: config.googleAnalytics,
-      googleAnalyticsKey: config.googleAnalyticsKey,
-      googleAnalyticsConsent: config.googleAnalyticsConsent,
-      googleAnalyticsConsentMsg: config.googleAnalyticsConsentMsg,
-      telemetry: config.telemetry
-    },
-    theme: {
-      theme: config.theme,
-      applySharedTheme: config.applySharedTheme
-    },
-    widget: {
-      home: {
-        addToMap: config.home,
-        ui: config.homePosition
-      },
-      mapZoom: {
-        addToMap: config.mapZoom,
-        ui: config.mapZoomPosition
-      }
-    }
+    config: config as ConfigState
   } as RootState;
 
   let store: Store;
@@ -109,7 +127,7 @@ import ConfigurationSettings from "./Components/ConfigurationSettings/Configurat
   // unregister() to register() below. Note this comes with some pitfalls.
   // Learn more about service workers: https://bit.ly/CRA-PWA
   serviceWorker.unregister();
-})();
+}
 
 function createApplicationBase(): ApplicationBase {
   const config = applicationJSON;

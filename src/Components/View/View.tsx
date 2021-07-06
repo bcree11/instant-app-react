@@ -1,99 +1,105 @@
-import { FC, ReactElement, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { FC, ReactElement, useEffect, useLayoutEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { createMapFromItem } from "../../ApplicationBase/support/itemUtils";
-import { baseSelector } from "../../redux/reducers/base";
-import { widgetSelector } from "../../redux/slices/widgetSlice";
-import ViewT9n from "../../t9n/View/resources.json";
 
 import Home from "@arcgis/core/widgets/Home";
 import MapView from "@arcgis/core/views/MapView";
-import Zoom from "@arcgis/core/widgets/Zoom";
+import MapZoom from "@arcgis/core/widgets/Zoom";
+import Expand from "@arcgis/core/widgets/Expand";
+
+import { mapSelector } from "../../redux/reducers/map";
+// import ViewT9n from "../../t9n/View/resources.json";
+// import { useMessages } from "../../hooks/useMessages";
 
 import "./View.scss";
-
-import { fetchMessageBundle } from "@arcgis/core/intl";
-import { getMessageBundlePath } from "../../utils/t9nUtils";
+import { configParamsSelector } from "../../redux/slices/configParamsSlice";
+import { WidgetPosition } from "../../types/interfaces";
 
 const CSS = {
   base: "esri-instant-app__view"
 };
 
 const View: FC = (): ReactElement => {
-  const [view] = useState<__esri.MapView>(new MapView());
-  const [messages, setMessages] = useState<typeof ViewT9n>(null);
+  // const messages: typeof ViewT9n = useMessages("View");
+  const view = useRef<__esri.MapView>(new MapView());
+  const map = useSelector(mapSelector);
   const mapDiv = useRef<HTMLDivElement>(null);
-  const { home, mapZoom } = useSelector(widgetSelector);
-  const base = useSelector(baseSelector);
-  const handleHome = useCallback((): void => {
-    const homeWidget = view.ui.find("home");
-    if (home.addToMap) {
-      if (homeWidget) {
-        view.ui.move({
-          component: homeWidget,
-          position: home.ui.position,
-          index: home.ui.index
-        });
-        return;
+  const {
+    home,
+    homePosition,
+    mapZoom,
+    mapZoomPosition,
+    mapA11yDesc
+    } = useSelector(configParamsSelector);
+  const mapDescription = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    view.current.container = mapDiv.current;
+    view.current.map = map;
+    view.current.ui.remove("zoom");
+  }, [map, mapDiv]);
+
+  useLayoutEffect(() => {
+    handleWidget(mapZoom, mapZoomPosition as WidgetPosition, "mapZoom", () => {
+      return new MapZoom({ view: view.current, id: "mapZoom" });
+    });
+  }, [mapZoom, mapZoomPosition, mapZoomPosition?.index, mapZoomPosition?.position]);
+
+  useLayoutEffect(() => {
+    handleWidget(home, homePosition as WidgetPosition, "home", () => {
+      return new Home({ view: view.current, id: "home" });
+    });
+  }, [home, homePosition, homePosition?.index, homePosition?.position]);
+
+  useEffect(() => {
+    const ariaDesc = mapA11yDesc ?? map?.portalItem?.snippet ?? map?.portalItem?.description ?? null;
+    if (ariaDesc) {
+      mapDescription.current.innerHTML = ariaDesc;
+      const rootNode = document.getElementsByClassName("esri-view-surface");
+      view.current.container.setAttribute("aria-describedby", "mapDescription");
+      for (let k = 0; k < rootNode.length; k++) {
+        rootNode[k].setAttribute("aria-describedby", "mapDescription");
       }
-      view.ui.add({
-        component: new Home({ view: view, id: "home" }),
-        position: home.ui.position,
-        index: home.ui.index
-      });
-    } else {
-      view.ui.remove(homeWidget);
     }
-  }, [home, view]);
-  const handleMapZoom = useCallback((): void => {
-    const zoomWidget = view.ui.find("mapZoom");
-    if (mapZoom.addToMap) {
-      if (zoomWidget) {
-        view.ui.move({
-          component: zoomWidget,
-          position: mapZoom.ui.position,
-          index: mapZoom.ui.index
-        });
-        return;
+    const popupContainer = view.current.popup.container as HTMLElement;
+    popupContainer?.setAttribute("aria-live", "polite");
+  }, [mapA11yDesc, map?.portalItem?.description, map?.portalItem?.snippet]);
+
+  function handleWidget(
+    visibility: boolean,
+    position: WidgetPosition,
+    classRef: string,
+    constructorFunc: Function,
+    expandable: boolean = false,
+    openAtStart: boolean = false
+  ) {
+    let widget = view.current.ui.find(classRef);
+    if (visibility) {
+      if (widget) {
+        view.current.ui.move({
+          component: widget,
+          ...position
+        } as __esri.UIMoveComponent);
+        if (expandable) {
+          const expandWidget = widget as Expand;
+          expandWidget.expanded = openAtStart;
+        }
+      } else {
+        widget = constructorFunc();
+        view.current.ui.add({
+          component: widget,
+          ...position
+        } as __esri.UIAddComponent);
       }
-      view.ui.add({
-        component: new Zoom({ view: view, id: "mapZoom" }),
-        position: mapZoom.ui.position,
-        index: mapZoom.ui.index
-      });
     } else {
-      view.ui.remove(zoomWidget);
+      view.current.ui.remove(widget);
     }
-  }, [mapZoom, view]);
+  }
 
-  useLayoutEffect(() => {
-    async function fetchMessages(): Promise<void> {
-      const data = await fetchMessageBundle(getMessageBundlePath("View"));
-      setMessages(data);
-    }
-    fetchMessages();
-  }, []);
-
-  useLayoutEffect(() => {
-    async function createView(): Promise<void> {
-      const portalItem: __esri.PortalItem = base.results.applicationItem.value;
-      const appProxies = portalItem?.applicationProxies ? portalItem.applicationProxies : null;
-      const { webMapItems } = base.results;
-      let item = null;
-      webMapItems.forEach((response) => (item = response.value));
-      const map = await createMapFromItem({ item, appProxies });
-      view.container = mapDiv.current;
-      view.map = map;
-      view.ui.remove("zoom");
-    }
-    createView();
-  }, [base, mapDiv, view]);
-
-  useLayoutEffect(() => {
-    handleHome();
-    handleMapZoom();
-  }, [handleHome, handleMapZoom, home.addToMap, mapZoom.addToMap, view.ready]);
-
-  return <div className={CSS.base} ref={mapDiv} />;
+  return (
+    <div className={CSS.base} ref={mapDiv}>
+      <div id="mapDescription" ref={mapDescription} className="sr-only"></div>
+    </div>
+  );
 };
 
 export default View;

@@ -1,19 +1,47 @@
-import { FC, ReactElement, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { actions } from "../../redux/actions";
+import { FC, ReactElement, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { configParamsSelector, updateConfigParam } from "../../redux/slices/configParamsSlice";
+import { ExtentSelector } from "../../types/interfaces";
 
 const ConfigurationSettings: FC = (): ReactElement => {
+  const debounceTimeout = useRef<NodeJS.Timeout>(null);
+  const { extentSelector, extentSelectorConfig } = useSelector(configParamsSelector);
+  const [isExtentSelector, setIsExtentSelector] = useState<boolean>(extentSelector);
+  const extentSelectorRef = useRef<boolean>(extentSelector);
+  const extentSelectorConfigRef = useRef<ExtentSelector>(extentSelectorConfig);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    function handleConfigurationUpdates(e) {
+    extentSelectorRef.current = extentSelector;
+  }, [extentSelector]);
+
+  useEffect(() => {
+    extentSelectorConfigRef.current = extentSelectorConfig;
+  }, [extentSelectorConfig]);
+
+  useEffect(() => {
+    function debounce(): void {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+      debounceTimeout.current = setTimeout(
+        () => dispatch(updateConfigParam({ key: "extentSelector", value: isExtentSelector })),
+        750
+      );
+    }
+    debounce();
+  }, [dispatch, isExtentSelector]);
+
+  useEffect(() => {
+    function handleConfigurationUpdates(e: MessageEvent) {
       if (e?.data?.type === "cats-app") {
         const dataKeys = Object.keys(e.data);
         const key = dataKeys.filter((key) => key !== "type")[0];
-        if (actions[key]) {
-          dispatch(actions[key](e.data[key]));
+        if (key === "extentSelector") {
+          setIsExtentSelector(e.data[key]);
         } else {
-          console.error("Error: Missing action: ", key);
+          dispatch(updateConfigParam({ key, value: e.data[key] }));
         }
       }
     }

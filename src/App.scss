@@ -5,17 +5,47 @@
   width: 100%;
 }
 
-.esri-instant-app__body {
-  height: 100%;
+.esri-instant-app {
+  &__body {
+    height: 100%;
+
+    &[data-theme="dark"] {
+      --header-background: #2c2c2c;
+      --header-color: #fff;
+    }
+
+    &[data-theme="light"] {
+      --header-background: #fff;
+      --header-color: #2c2c2c;
+    }
+  }
+
+  &__opt-out-button {
+    float: right;
+  }
+
+  html[dir="rtl"] &__opt-out-button {
+    float: left;
+  }
 }
 
-.esri-instant-app__body--header {
-  height: 95%;
-}
-.esri-instant-app__opt-out-button {
-  float: right;
+.sr-only {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
 
-html[dir="rtl"] .esri-instant-app__opt-out-button {
-  float: left;
+.app-error {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    margin: 0;
+    width: 65%;
+    text-align: center;
+  }
 }

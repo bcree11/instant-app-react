@@ -1,20 +1,14 @@
 import { combineReducers } from "redux";
-import base from "./reducers/base";
-import header from "./slices/headerSlice";
+import map from "./reducers/map";
+import config from "./slices/configParamsSlice";
 import portal from "./slices/portalSlice";
-import splash from "./slices/splashSlice";
-import telemetry from "./slices/telemetrySlice";
-import theme from "./slices/themeSlice";
-import widget from "./slices/widgetSlice";
+import mobile from "./slices/mobileSlice";
 
 export const rootReducer = combineReducers({
-  base,
-  header,
-  portal,
-  splash,
-  telemetry,
-  theme,
-  widget
+  config,
+  map,
+  mobile,
+  portal
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

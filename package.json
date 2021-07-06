@@ -4,9 +4,9 @@
   "private": true,
   "dependencies": {
     "@analytics/aws-pinpoint": "^0.4.4",
-    "@arcgis/core": "^4.19.0-next.20210222",
+    "@arcgis/core": "^4.20.1",
     "@esri/application-base-js": "git+https://github.com/Esri/application-base-js.git#arcgis-core",
-    "@esri/calcite-components": "^1.0.0-beta.51",
+    "@esri/calcite-components": "^1.0.0-beta.58",
     "@esri/telemetry": "^3.0.2",
     "@reduxjs/toolkit": "^1.5.0",
     "@testing-library/jest-dom": "^4.2.4",

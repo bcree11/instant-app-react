@@ -1,98 +1,143 @@
-import { FC, ReactElement, useLayoutEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { FC, ReactElement, useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import HeaderT9n from "../../t9n/Header/resources.json";
+import { mobileSelector } from "../../redux/slices/mobileSlice";
+import { configParamsSelector } from "../../redux/slices/configParamsSlice";
+import { mapSelector } from "../../redux/reducers/map";
 import { portalSelector } from "../../redux/slices/portalSlice";
-import { headerSelector } from "../../redux/slices/headerSlice";
-import { themeSelector } from "../../redux/slices/themeSlice";
-import { Theme } from "../../types/interfaces";
+import { handlePaneHeight } from "../../utils/utils";
+import { SharedTheme } from "../../types/interfaces";
+import { useMessages } from "../../hooks/useMessages";
+
 import "./Header.scss";
 
 const CSS = {
   base: "esri-instant-app__header",
-  baseLight: "esri-instant-app__header--light"
+  container: "esri-instant-app__header-container",
+  titleContainer: "esri-instant-app__header-title-container",
+  dropdownContainer: "esri-instant-app__header-dropdown-container"
 };
 
-interface SharedThemeItem {
-  background: string;
-  text: string;
+interface DropdownItemProps {
+  active: boolean;
+  index: number;
+  title: string;
 }
 
-interface SharedThemeLogoItem {
-  small: string;
-  link: string;
+interface HeaderLogoProps {
+  sharedTheme: SharedTheme;
 }
 
-interface SharedTheme {
-  header: SharedThemeItem;
-  logo: SharedThemeLogoItem;
-}
+const DropdownItem: FC<DropdownItemProps> = ({ active, index, title }): ReactElement => {
+  const dropdownItem = useRef<HTMLCalciteDropdownItemElement>(null);
 
-interface HeaderStyle {
-  backgroundColor: string;
-  color: string;
-}
+  useEffect(() => {
+    if (!document.getElementById(`title-${index}`)) {
+      const itemStyle = document.createElement("style");
+      itemStyle.innerHTML = `:host::before {
+        content: unset!important;
+      }`;
+      itemStyle.id = `title-${index}`;
+      dropdownItem.current.shadowRoot.prepend(itemStyle);
+    }
+  }, [index]);
 
-interface LogoProps {
-  link: string;
-  logo: string;
-}
+  return (
+    <calcite-dropdown-item
+      ref={dropdownItem}
+      key={`${title}-${index}`}
+      data-position={index}
+      data-active={active}
+    >
+      {title}
+    </calcite-dropdown-item>
+  );
+};
 
-function getDefaultHeaderTheme(theme: Theme): HeaderStyle {
-  if (theme === "dark") {
-    return {
-      backgroundColor: "#242424",
-      color: "#fff"
-    };
+const HeaderLogo: FC<HeaderLogoProps> = ({ sharedTheme }): ReactElement => {
+  const logo = sharedTheme?.logo?.small;
+  const logoLink = sharedTheme?.logo?.link;
+  const logoImg = logo ? <img src={logo} alt="logo" /> : null;
+  if (logoImg) {
+    return logoLink ? (
+      <a rel="noreferrer noopener" target="_blank" href={logoLink}>
+        {logoImg}
+      </a>
+    ) : (
+      logoImg
+    );
   } else {
-    return {
-      backgroundColor: "#fff",
-      color: "#949494"
-    };
+    return null;
   }
-}
-
-const Logo: FC<LogoProps> = ({ link, logo }): ReactElement => {
-  return link && logo ? (
-    <a href={link} target="_blank" rel="noopener noreferrer">
-      <img src={logo} alt="Logo" />
-    </a>
-  ) : !link && logo ? (
-    <img src={logo} alt="Logo" />
-  ) : null;
 };
 
 const Header: FC = (): ReactElement => {
-  const { title } = useSelector(headerSelector);
-  const { applySharedTheme, theme } = useSelector(themeSelector);
-  const portal = useSelector(portalSelector);
-  const [sharedTheme, setSharedTheme] = useState<SharedTheme>(null);
-  const headerRef = useRef<HTMLElement>(null);
-  const sharedThemeLogo = useRef<LogoProps>({
-    logo: portal?.portalProperties?.sharedTheme?.logo?.small,
-    link: portal?.portalProperties?.sharedTheme?.logo?.link
-  });
+  const { applySharedTheme, header, title, titleLink } = useSelector(configParamsSelector);
+  const { showMobileMode } = useSelector(mobileSelector);
+  const { portalProperties } = useSelector(portalSelector);
+  const map = useSelector(mapSelector);
+  const messages: typeof HeaderT9n = useMessages("Header");
+  const [headerTitle, setHeaderTitle] = useState<string>(null);
+  const dropdown = useRef<HTMLCalciteDropdownElement>(null);
+  const headerTitleEl = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
 
-  useLayoutEffect(() => {
-    const { style } = headerRef.current;
-    const { backgroundColor, color } = getDefaultHeaderTheme(theme);
-    setSharedTheme(portal?.portalProperties?.sharedTheme);
-    if (sharedTheme) {
-      style.backgroundColor = sharedTheme?.header?.background ?? backgroundColor;
-      style.color = sharedTheme?.header?.text ?? color;
-      sharedThemeLogo.current.logo = sharedTheme?.logo?.small;
-      sharedThemeLogo.current.link = sharedTheme?.logo?.link;
-    } else {
-      style.backgroundColor = backgroundColor;
-      style.color = color;
-    }
-  }, [headerRef, portal, sharedTheme, theme]);
+  useEffect(() => {
+    dropdown.current?.addEventListener("calciteDropdownSelect", () => {
+      const item = dropdown.current.selectedItems?.[0];
+      if (item) {
+        console.log('item: ',item);
+      }
+    });
+  }, [dispatch, showMobileMode]);
+
+  useEffect(() => {
+    setHeaderTitle(title ? title : map?.portalItem?.title);
+  }, [map?.portalItem?.title, title]);
+
+  useEffect(() => {
+    const resizeObserver = new ResizeObserver(() => {
+      const checkHeader = header || showMobileMode;
+      handlePaneHeight(checkHeader, headerTitleEl.current);
+    });
+    resizeObserver.observe(headerTitleEl.current);
+  }, [header, showMobileMode]);
 
   return (
-    <header ref={headerRef} className={CSS.base}>
-      <h1>
-        {applySharedTheme && <Logo link={sharedThemeLogo.current.link} logo={sharedThemeLogo.current.logo} />}
-        {title}
-      </h1>
-    </header>
+    <div ref={headerTitleEl} className={CSS.base}>
+      {showMobileMode && (
+        <div className={CSS.dropdownContainer}>
+          <calcite-dropdown ref={dropdown} type="hover">
+            <calcite-button slot="dropdown-trigger" label={messages?.menu} icon-start="hamburger" scale="l" />
+            <calcite-dropdown-group>
+              {["First","Second","Third"].map((item, index) => (
+                <DropdownItem
+                  key={`${item}-${index}`}
+                  index={index}
+                  title={item}
+                  active={index === 0}
+                />
+              ))}
+            </calcite-dropdown-group>
+          </calcite-dropdown>
+        </div>
+      )}
+      {header && (
+        <div className={CSS.container}>
+          {applySharedTheme && <HeaderLogo sharedTheme={portalProperties?.sharedTheme} />}
+          <div className={CSS.titleContainer}>
+            <h1>
+              {titleLink ? (
+                <a target="_blank" rel="noopener noreferrer" href={titleLink}>
+                  {headerTitle}
+                </a>
+              ) : headerTitle}
+            </h1>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
