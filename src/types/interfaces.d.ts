@@ -8,9 +8,9 @@ export interface ThemeState {
 }
 
 export interface SharedTheme {
-  button:  { background: string; text: string },
-  header:  { background: string; text: string };
-  logo: { small: string; link: string }
+  button: { background: string; text: string };
+  header: { background: string; text: string };
+  logo: { small: string; link: string };
 }
 
 // Widget
@@ -71,7 +71,8 @@ export interface ConfigState {
   extentSelectorConfig: ExtentSelector;
   header: boolean;
   home: boolean;
-  homePosition: WidgetPosition;
+  legendOpenAtStart: boolean;
+  legendPosition: WidgetPosition;
   mapZoom: boolean;
   mapZoomPosition: WidgetPosition;
   googleAnalytics: boolean;
@@ -89,4 +90,83 @@ export interface ConfigState {
   splashContent: string;
   splashButtonText: string;
   splashOnStart: boolean;
+  coverPage: boolean;
+  coverPageConfig: ICoverPageConfig;
+  coverPageIsVisible?: boolean;
+  controlPanelPosition: WidgetPosition;
+  autoPlay: boolean;
+  autoPlayDuration: number;
+  share: boolean;
+  exportToPDF: boolean;
+  measure: boolean;
 }
+
+// Cover page
+
+export interface ICoverPageConfig {
+  title?: string;
+  titleColor?: string;
+  subtitle?: string;
+  subtitleColor?: string;
+  textPosition?: string;
+  buttonText?: string;
+  buttonTextColor?: string;
+  background?: {
+    backgroundType?: string;
+    backgroundImage?: any;
+    backgroundColor?: string;
+  };
+}
+
+// Exhibit
+
+export interface ExhibitState {
+  prevSlide?: ISlide;
+  currentSlide?: ISlide;
+  nextSlide?: ISlide;
+  currentSlideIndex?: number;
+  openInfo: boolean;
+  slides: ISlide[];
+  transition: SlideTransition;
+}
+
+export interface ISlide {
+  id: number;
+  map: IExhibitMap;
+  slideContent: IExhibitSlide;
+  bookmark?: string;
+}
+
+interface IExhibitMap {
+  disableScroll: boolean;
+  visibleLayers: string[];
+  includePopup: boolean;
+  popup?: IPopup;
+  basemapId?: string;
+  filter?: { [key: string]: string };
+  goTo?: { center: number[]; scale: number; zoom?: number };
+}
+
+interface IPopup {
+  layerId: string;
+  objectId: number | string;
+  title: string;
+}
+
+interface IExhibitSlide {
+  title: string;
+  legendEnabled: boolean;
+  slideNote1Enabled: boolean;
+  slideNote1: ISlideNote;
+  slideNote2Enabled: boolean;
+  slideNote2: ISlideNote;
+}
+
+export interface ISlideNote {
+  position: SlidePosition;
+  backgroundColor?: string;
+  content?: string;
+}
+
+export type SlideTransition = "fade" | "slowFade" | "none";
+export type SlidePosition = "bottom-left" | "bottom-right" | "top-left" | "top-right";

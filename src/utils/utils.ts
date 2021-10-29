@@ -18,3 +18,20 @@ export function handlePaneHeight(header: boolean, headerEl: HTMLDivElement): voi
     }
   }
 }
+
+export async function getGraphic(allLayers: __esri.Layer[], layerId: string, objectId: string | number): Promise<__esri.Graphic> {
+  const featureLayer = allLayers.find(({ id }) => id === layerId) as __esri.FeatureLayer;
+  const { definitionExpression, objectIdField } = featureLayer;
+  const query = featureLayer.createQuery();
+  query.where = definitionExpression
+    ? definitionExpression + " AND " + objectIdField + " = " + objectId
+    : objectIdField + " = " + objectId;
+  query.num = 1;
+  query.outFields = ["*"];
+  query.returnGeometry = true;
+  if (featureLayer?.capabilities?.query?.supportsCacheHint) {
+    query.cacheHint = true;
+  }
+  const results = await featureLayer.queryFeatures(query);
+  return results.features?.[0];
+}

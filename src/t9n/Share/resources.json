@@ -1,0 +1,14 @@
+{
+  "heading": "Share",
+  "subHeading": "Share this app",
+  "urlTitle": "Esri ArcGIS - {title}",
+  "urlSummary": "Check out this app - {summary}",
+  "widgetLabel": "Share",
+  "clipboard": "Copy to clipboard",
+  "sendLink": "Send a link",
+  "embedMap": "Embed map",
+  "copied": "Copied",
+  "generateLink": "Generating link...",
+  "iframeTitle": "Share Embed IFrame Element",
+  "close": "Close share panel"
+}

@@ -1,0 +1,72 @@
+.esri-portfolio-share-panel {
+  position: absolute;
+  width: 30%;
+  padding: 1%;
+  z-index: 2;
+  background-color: #2a2a2a;
+  color: #fff;
+  transition: top 100ms linear;
+  overflow-y: auto;
+  box-sizing: border-box;
+
+  p {
+    margin-top: 0;
+  }
+}
+
+.esri-portfolio-share-panel--light {
+  background-color: #fff;
+  color: #6d6d6d;
+}
+
+.esri-portfolio-share-panel__close-button-container,
+.esri-portfolio-share-panel__main-content-container {
+  background-color: transparent;
+}
+
+.esri-portfolio-share-panel__main-content-container {
+  height: 100%;
+  padding: 5%;
+}
+
+.esri-portfolio-share-panel__close-button-container {
+  width: 100%;
+  height: auto;
+  text-align: right;
+  opacity: 1;
+}
+
+.esri-portfolio-share-panel__close-button {
+  background-color: #2a2a2a;
+}
+
+.esri-portfolio-share-panel--open {
+  top: calc(-100% - 2px);
+}
+
+.esri-portfolio-share-panel__toggle-btn {
+  height: 100%;
+  background: transparent;
+  color: #fff;
+  border: none;
+  border-right: 1px solid #5e5d5e;
+  cursor: pointer;
+}
+
+.esri-portfolio-share-panel__toggle-btn--light {
+  color: #6d6d6d;
+}
+
+.esri-portfolio-share-panel__toggle-btn:hover {
+  background-color: #6d6d6d;
+}
+
+.esri-portfolio-share-panel__toggle-btn--light:hover {
+  background-color: lightgray;
+}
+
+@media only screen and (max-width: 813px) {
+  .esri-portfolio-share-panel {
+    width: 100%;
+  }
+}

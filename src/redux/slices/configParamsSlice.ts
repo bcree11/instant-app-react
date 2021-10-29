@@ -13,7 +13,8 @@ import {
   googleAnalyticsConsentMsg,
   header,
   home,
-  homePosition,
+  legendOpenAtStart,
+  legendPosition,
   mapZoom,
   mapZoomPosition,
   telemetry,
@@ -26,20 +27,29 @@ import {
   splashTitle,
   splashContent,
   splashButtonText,
-  splashOnStart
+  splashOnStart,
+  coverPage,
+  coverPageConfig,
+  controlPanelPosition,
+  autoPlay,
+  autoPlayDuration,
+  share,
+  exportToPDF,
+  measure
 } from "../../config/application.json";
 
 const DEFAULT_STATE: ConfigState = {
   applySharedTheme,
   extentSelector,
-  extentSelectorConfig,
+  extentSelectorConfig: extentSelectorConfig as any,
   googleAnalytics,
   googleAnalyticsKey,
   googleAnalyticsConsent,
   googleAnalyticsConsentMsg,
   header,
   home,
-  homePosition: homePosition as WidgetPosition,
+  legendOpenAtStart,
+  legendPosition: legendPosition as WidgetPosition,
   mapZoom,
   mapZoomPosition: mapZoomPosition as WidgetPosition,
   telemetry,
@@ -52,7 +62,16 @@ const DEFAULT_STATE: ConfigState = {
   splashTitle,
   splashContent,
   splashButtonText,
-  splashOnStart
+  splashOnStart,
+  coverPage,
+  coverPageIsVisible: coverPage,
+  coverPageConfig,
+  controlPanelPosition: controlPanelPosition as WidgetPosition,
+  autoPlay,
+  autoPlayDuration,
+  share,
+  exportToPDF,
+  measure
 };
 
 const configParamsSlice = createSlice({
@@ -62,15 +81,18 @@ const configParamsSlice = createSlice({
     updateConfigParam: (state, { payload }: PayloadAction<{ key: string; value: any }>) => {
       const { key, value } = payload;
       state[key] = value;
-      if(key === "theme") {
-        updateJSAPIStyles(value)
+      if (key === "theme") {
+        updateJSAPIStyles(value);
       } else if (key === "title") {
         setPageTitle(value);
       }
+    },
+    updateCoverPageIsVisible: (state, { payload }: PayloadAction<boolean>) => {
+      state.coverPageIsVisible = payload;
     }
   }
 });
 
-export const { updateConfigParam } = configParamsSlice.actions;
+export const { updateConfigParam, updateCoverPageIsVisible } = configParamsSlice.actions;
 export const configParamsSelector = (state: RootState) => state.config;
 export default configParamsSlice.reducer;

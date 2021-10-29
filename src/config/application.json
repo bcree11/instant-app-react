@@ -1,9 +1,9 @@
 {
   "appid": "",
-  "webmap": "default",
+  "webmap": "6b41c47a76f94246b54ed6676fbc661b",
   "title": "",
   "titleLink": "",
-  "portalUrl": "https://www.arcgis.com",
+  "portalUrl": "https://nw-brews.mapsdevext.arcgis.com",
   "oauthappid": "arcgisWebApps",
   "proxyUrl": "",
   "units": "",
@@ -11,28 +11,74 @@
   "googleAnalyticsKey": null,
   "googleAnalyticsConsent": false,
   "googleAnalyticsConsentMsg": null,
-  "extentSelector": false,
-  "extentSelectorConfig": null,
+  "extentSelector": true,
+  "extentSelectorConfig": {
+    "constraints": {
+      "geometry": {
+        "spatialReference": {
+          "latestWkid": 3857,
+          "wkid": 102100
+        },
+        "rings": [
+          [
+            [-8998663.759771017, 4794919.089520884],
+            [-8998663.759771017, 5211195.145561813],
+            [-8287799.396719103, 5211195.145561813],
+            [-8287799.396719103, 4794919.089520884],
+            [-8998663.759771017, 4794919.089520884]
+          ]
+        ]
+      },
+      "minScale": 4479471.895197,
+      "maxScale": 0,
+      "rotationEnabled": true
+    },
+    "mapRotation": 0
+  },
   "header": true,
   "splash": true,
-  "infoPanelOpenAtStart": false,
   "splashTitle": "Welcome!",
   "splashContent": "",
   "splashButtonText": "Explore",
-  "splashOnStart": true,
+  "splashOnStart": false,
   "theme": "dark",
-  "applySharedTheme": false,
+  "applySharedTheme": true,
   "mapA11yDesc": null,
-  "home": true,
-  "homePosition": {
-    "position": "top-left",
-    "index": 0
+  "autoPlay": true,
+  "autoPlayDuration": 5,
+  "share": true,
+  "exportToPDF": true,
+  "measure": true,
+  "coverPage": false,
+  "coverPageConfig": {
+    "title": "Charts",
+    "titleColor": "#ffffff",
+    "subtitle": "View and analyze charts in your map!",
+    "subtitleColor": "#ffffff",
+    "textPosition": "center-leading",
+    "buttonText": "Explore",
+    "buttonTextColor": "#ffffff",
+    "background": {
+      "backgroundType": "color",
+      "backgroundImage": null,
+      "backgroundColor": "#0079c1"
+    }
   },
+  "home": true,
   "mapZoom": true,
   "mapZoomPosition": {
-    "position": "top-left",
+    "position": "top-right",
     "index": 1
   },
+  "controlPanelPosition": {
+    "position": "top-right",
+    "index": 0
+  },
+  "legendPosition": {
+    "position": "bottom-left",
+    "index": 0
+  },
+  "legendOpenAtStart": true,
   "helperServices": {
     "geometry": {
       "url": null
@@ -76,5 +122,164 @@
         }
       }
     }
+  },
+  "exhibitConfig": {
+    "transition": "fade",
+    "slides": [
+      {
+        "id": 1634080008393,
+        "map": {
+          "disableScroll": false,
+          "visibleLayers": ["17a5f482eda-layer-2", "17a5f46b784-layer-1"],
+          "includePopup": true,
+          "goTo": {
+            "center": [-118.21637253417296, 34.366556138177366],
+            "scale": 288895.277144,
+            "zoom": 11
+          },
+          "popup": {
+            "objectId": 48,
+            "layerId": "17a5f482eda-layer-2",
+            "title": "Wilshire Grand Center"
+          }
+        },
+        "slideContent": {
+          "title": "Slide 1",
+          "legendEnabled": false,
+          "slideNote1Enabled": true,
+          "slideNote1": {
+            "position": "bottom-right",
+            "backgroundColor": "#e8ffd2",
+            "content": null
+          },
+          "slideNote2Enabled": false,
+          "slideNote2": {
+            "position": "bottom-right",
+            "backgroundColor": "#e8ffd2",
+            "content": null
+          }
+        }
+      },
+      {
+        "id": 1634234178993,
+        "map": {
+          "disableScroll": true,
+          "visibleLayers": ["17a5f482eda-layer-2", "17a5f46b784-layer-1"],
+          "includePopup": false,
+          "goTo": {
+            "center": [-118.18676694999121, 34.345297602162795],
+            "scale": 288895.277144,
+            "zoom": 11
+          }
+        },
+        "slideContent": {
+          "title": "Wilshire Grand Center",
+          "legendEnabled": false,
+          "slideNote1Enabled": true,
+          "slideNote1": {
+            "position": "bottom-right",
+            "backgroundColor": "#e8ffd2",
+            "content": "Wilshire Grand Center content"
+          },
+          "slideNote2Enabled": false,
+          "slideNote2": {
+            "position": "bottom-right",
+            "backgroundColor": "#e8ffd2",
+            "content": null
+          }
+        },
+        "bookmark": "Wilshire Grand Center"
+      },
+      {
+        "id": 1634234178994,
+        "map": {
+          "disableScroll": false,
+          "visibleLayers": ["17a5f482eda-layer-2", "17a5f46b784-layer-1"],
+          "includePopup": false,
+          "goTo": {
+            "center": [-76.5217423359986, 39.47670791453499],
+            "scale": 288895.277144,
+            "zoom": 11
+          }
+        },
+        "slideContent": {
+          "title": "Transamerica Tower",
+          "legendEnabled": false,
+          "slideNote1Enabled": true,
+          "slideNote1": {
+            "position": "bottom-right",
+            "backgroundColor": "#e8ffd2",
+            "content": null
+          },
+          "slideNote2Enabled": false,
+          "slideNote2": {
+            "position": "bottom-right",
+            "backgroundColor": "#e8ffd2",
+            "content": null
+          }
+        },
+        "bookmark": "Transamerica Tower"
+      },
+      {
+        "id": 1634234178995,
+        "map": {
+          "disableScroll": false,
+          "visibleLayers": ["17a5f482eda-layer-2", "17a5f46b784-layer-1"],
+          "includePopup": false,
+          "goTo": {
+            "center": [-73.98997037812448, 40.70932723094693],
+            "scale": 144447.638572,
+            "zoom": 11
+          }
+        },
+        "slideContent": {
+          "title": "One World Trade Center",
+          "legendEnabled": false,
+          "slideNote1Enabled": true,
+          "slideNote1": {
+            "position": "top-right",
+            "backgroundColor": "#e8ffd2",
+            "content": null
+          },
+          "slideNote2Enabled": true,
+          "slideNote2": {
+            "position": "top-right",
+            "backgroundColor": "#e8ffd2",
+            "content": "One World Trade Center content slideNote2"
+          }
+        },
+        "bookmark": "One World Trade Center"
+      },
+      {
+        "id": 1634234178996,
+        "map": {
+          "disableScroll": false,
+          "visibleLayers": ["17a5f482eda-layer-2", "17a5f46b784-layer-1"],
+          "includePopup": false,
+          "goTo": {
+            "center": [-74.04287292762963, 40.71861012932123],
+            "scale": 144447.638572,
+            "zoom": 11
+          }
+        },
+        "slideContent": {
+          "title": "30 Hudson Street",
+          "legendEnabled": false,
+          "slideNote1Enabled": true,
+          "slideNote1": {
+            "position": "bottom-right",
+            "backgroundColor": "#e8ffd2",
+            "content": null
+          },
+          "slideNote2Enabled": false,
+          "slideNote2": {
+            "position": "bottom-right",
+            "backgroundColor": "#e8ffd2",
+            "content": null
+          }
+        },
+        "bookmark": "30 Hudson Street"
+      }
+    ]
   }
 }

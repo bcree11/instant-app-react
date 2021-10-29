@@ -20,7 +20,8 @@
     "noEmit": true,
     "noImplicitAny": false,
     "strictNullChecks": false,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true
   },
   "files": [
     "src/types/declarations.d.ts"

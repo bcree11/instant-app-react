@@ -31,30 +31,32 @@ import { rootReducer, RootState } from "./redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 
 import ConfigurationSettings from "./Components/ConfigurationSettings/ConfigurationSettings";
-import { ConfigState } from "./types/interfaces";
+import { ConfigState, ExhibitState } from "./types/interfaces";
 
 (async function init(): Promise<void> {
   try {
     const base = (await createApplicationBase().load()) as ApplicationBase;
     handleApplicationBaseLoad(base);
   } catch (message) {
-    if (message === "identity-manager:not-authorized") {
-      const root = document.getElementById("root");
-      root.classList.add("app-error");
-      root.innerHTML = `<h1>Not Licensed</h1><p>Your account is not licensed to use Configurable Apps that are not public. Please ask your organization administrator to assign you a user type that includes Essential Apps or an add-on Essential Apps license.</p>`;
-    } else if (message?.name === "identity-manager:not-authorized") {
-      const root = document.getElementById("root");
-      root.classList.add("app-error");
-      root.innerHTML = `<p>${message?.message}</p>`;
-    } else if (message?.error === "application:origin-other") {
-      const urlPath = new URL(window.location.href);
-      const origin = urlPath.origin;
-      document.location.href = `${origin}/apps/shared/origin/index.html?appUrl=${message.appUrl}`;
-    } else if (message?.message === "Item does not exist or is inaccessible.") {
-      const root = document.getElementById("root");
-      root.classList.add("app-error");
-      root.innerHTML = `<p>${message?.message}</p>`;
-    }
+    console.error("Error: ", message);
+
+    // if (message === "identity-manager:not-authorized") {
+    //   const root = document.getElementById("root");
+    //   root.classList.add("app-error");
+    //   root.innerHTML = `<h1>Not Licensed</h1><p>Your account is not licensed to use Configurable Apps that are not public. Please ask your organization administrator to assign you a user type that includes Essential Apps or an add-on Essential Apps license.</p>`;
+    // } else if (message?.name === "identity-manager:not-authorized") {
+    //   const root = document.getElementById("root");
+    //   root.classList.add("app-error");
+    //   root.innerHTML = `<p>${message?.message}</p>`;
+    // } else if (message?.error === "application:origin-other") {
+    //   const urlPath = new URL(window.location.href);
+    //   const origin = urlPath.origin;
+    //   document.location.href = `${origin}/apps/shared/origin/index.html?appUrl=${message.appUrl}`;
+    // } else if (message?.message === "Item does not exist or is inaccessible.") {
+    //   const root = document.getElementById("root");
+    //   root.classList.add("app-error");
+    //   root.innerHTML = `<p>${message?.message}</p>`;
+    // }
   }
 })();
 
@@ -96,11 +98,19 @@ async function handleApplicationBaseLoad(base: ApplicationBase) {
   const appProxies = item?.applicationProxies ? item.applicationProxies : null;
   const map = await createMapFromItem({ item, appProxies });
   setPageTitle(config.title ? config.title : map?.portalItem?.title ?? "");
+  const initConfig: ConfigState = JSON.parse(JSON.stringify(config))
+  initConfig.coverPageIsVisible = config.coverPage;
 
   const initialState = {
     map,
     portal: base.portal,
-    config: config as ConfigState
+    config: initConfig,
+    exhibit: {
+      ...config.exhibitConfig,
+      currentSlide: config.exhibitConfig.slides[0],
+      currentSlideIndex: 0,
+      openInfo: config.splash && config.splashOnStart && !config.coverPage
+    } as ExhibitState
   } as RootState;
 
   let store: Store;

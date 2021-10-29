@@ -2,6 +2,7 @@ import { FC, ReactElement, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { configParamsSelector, updateConfigParam } from "../../redux/slices/configParamsSlice";
+import { updateExhibit } from "../../redux/slices/exhibitSlice";
 import { ExtentSelector } from "../../types/interfaces";
 
 const ConfigurationSettings: FC = (): ReactElement => {
@@ -40,6 +41,8 @@ const ConfigurationSettings: FC = (): ReactElement => {
         const key = dataKeys.filter((key) => key !== "type")[0];
         if (key === "extentSelector") {
           setIsExtentSelector(e.data[key]);
+        } else if (key === "exhibitConfig") {
+          dispatch(updateExhibit(e.data[key]));
         } else {
           dispatch(updateConfigParam({ key, value: e.data[key] }));
         }
