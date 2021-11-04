@@ -1,8 +1,6 @@
 import { FC, ReactElement, useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import "./CoverPage.scss";
-
 import { on } from "@arcgis/core/core/watchUtils";
 import Handles from "@arcgis/core/core/Handles";
 
@@ -10,6 +8,8 @@ import { configParamsSelector, updateCoverPageIsVisible } from "../../redux/slic
 import { portalSelector } from "../../redux/slices/portalSlice";
 import { useIsMounted } from "../../hooks/useIsMounted";
 import { updateOpenInfo } from "../../redux/slices/exhibitSlice";
+
+import "./CoverPage.scss";
 
 const CSS = {
   base: "esri-cover-page",

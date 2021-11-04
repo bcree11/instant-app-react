@@ -6,18 +6,20 @@ import AreaMeasurement2D from "@arcgis/core/widgets/AreaMeasurement2D";
 
 import Share from "../Share/Share";
 
-import { configParamsSelector } from "../../redux/slices/configParamsSlice";
-
-import "./ControlPanel.scss";
 import {
   decreaseCurrentSlideIndex,
   exhibitSelector,
   increaseCurrentSlideIndex,
+  updateAutoPlaying,
   updateOpenInfo
 } from "../../redux/slices/exhibitSlice";
+import { configParamsSelector } from "../../redux/slices/configParamsSlice";
 import { ISlide, WidgetPosition } from "../../types/interfaces";
 
+import "./ControlPanel.scss";
+
 interface ControlPanelProps {
+  slide: ISlide;
   view: __esri.MapView;
 }
 
@@ -45,10 +47,18 @@ interface ExpandedGroupProps {
 }
 
 const CSS = {
-  base: "esri-control-panel"
+  base: "esri-control-panel",
+  dark: "esri-control-panel esri-control-panel--dark"
 };
 
-const ControlPanelButton: FC<ControlPanelButtonProps> = ({ actionRef, icon, id, showAction, title, onClick }): ReactElement => {
+const ControlPanelButton: FC<ControlPanelButtonProps> = ({
+  actionRef,
+  icon,
+  id,
+  showAction,
+  title,
+  onClick
+}): ReactElement => {
   return (
     showAction && (
       <calcite-action
@@ -155,13 +165,12 @@ const SlideActionGroup: FC<any> = ({ autoPlay, autoplaying, playButton, handleAu
   );
 };
 
-const ControlPanel: FC<ControlPanelProps> = ({ view }): ReactElement => {
+const ControlPanel: FC<ControlPanelProps> = ({ slide, view }): ReactElement => {
   const { autoPlay, autoPlayDuration, controlPanelPosition, exportToPDF, home, measure, share, splash, theme } =
     useSelector(configParamsSelector);
-  const { currentSlide, currentSlideIndex, slides } = useSelector(exhibitSelector);
+  const { autoPlaying, currentSlide, currentSlideIndex, slides } = useSelector(exhibitSelector);
   const [expanded, setExpanded] = useState<boolean>(false);
   const [addMeasureSelector, setAddMeasureSelector] = useState<boolean>(false);
-  const [autoplaying, setAutoplaying] = useState<boolean>(false);
   const expandButton = useRef<HTMLCalciteActionElement>(null);
   const playButton = useRef<HTMLCalciteActionElement>(null);
   const measureButton = useRef<HTMLCalciteActionElement>(null);
@@ -188,20 +197,32 @@ const ControlPanel: FC<ControlPanelProps> = ({ view }): ReactElement => {
 
   useEffect(() => {
     if (autoPlay) {
-      if (autoplaying && currentSlideIndex < slides.length - 1) {
-        const duration = autoPlayDuration * 1000;
-        interval.current = setTimeout(() => {
-          dispatch(increaseCurrentSlideIndex());
-        }, duration);
+      if (autoPlaying && currentSlideIndex < slides.length - 1) {
+        if (slide.id === currentSlide.id) {
+          const duration = autoPlayDuration * 1000;
+          interval.current = setTimeout(() => {
+            dispatch(increaseCurrentSlideIndex());
+          }, duration);
+        }
       } else {
         if (interval.current) {
-          clearInterval(interval.current);
+          clearTimeout(interval.current);
           interval.current = null;
-          setAutoplaying(false);
+          dispatch(updateAutoPlaying(false));
         }
       }
     }
-  }, [autoPlay, autoPlayDuration, autoplaying, currentSlideIndex, dispatch, slides.length, theme]);
+  }, [
+    autoPlay,
+    autoPlayDuration,
+    autoPlaying,
+    currentSlide.id,
+    currentSlideIndex,
+    dispatch,
+    slide.id,
+    slides.length,
+    theme
+  ]);
 
   useEffect(() => {
     const measureSelector = view.ui.find("measure-widget-bar");
@@ -239,7 +260,6 @@ const ControlPanel: FC<ControlPanelProps> = ({ view }): ReactElement => {
       view.ui.remove("measure-widget-bar");
       setAddMeasureSelector(false);
     };
-    console.log("measureSelector ", measureSelector);
     if (measureButton.current) {
       measureButton.current.active = addMeasureSelector;
     }
@@ -259,16 +279,16 @@ const ControlPanel: FC<ControlPanelProps> = ({ view }): ReactElement => {
         index: controlPanelPosition.index + 1,
         position: controlPanelPosition.position
       };
-      container.addEventListener("click",(e) => {
+      container.addEventListener("click", (e) => {
         const action = e.target as HTMLCalciteActionElement;
         action.active = true;
-        if(action.icon !== "measure-line") {
+        if (action.icon !== "measure-line") {
           distance.active = false;
         }
-        if(action.icon !== "measure-area") {
+        if (action.icon !== "measure-area") {
           area.active = false;
         }
-      })
+      });
       view.ui.add(container, measurePosition);
     } else {
       removeMeasureWidget();
@@ -300,11 +320,11 @@ const ControlPanel: FC<ControlPanelProps> = ({ view }): ReactElement => {
   }
 
   function handleAutoplaying(): void {
-    setAutoplaying(!autoplaying);
+    dispatch(updateAutoPlaying(!autoPlaying));
   }
 
   return (
-    <div className={CSS.base}>
+    <div className={theme === "dark" ? CSS.dark : CSS.base}>
       <calcite-action-pad expand-disabled layout="horizontal" scale="s">
         {(home || measure || splash || share || exportToPDF) && (
           <calcite-action-group layout="horizontal">
@@ -331,7 +351,12 @@ const ControlPanel: FC<ControlPanelProps> = ({ view }): ReactElement => {
             handleAddMeasureSelector={handleAddMeasureSelector}
           />
         )}
-        <SlideActionGroup autoPlay={autoPlay} autoplaying={autoplaying} handleAutoplaying={handleAutoplaying} playButton={playButton} />
+        <SlideActionGroup
+          autoPlay={autoPlay}
+          autoplaying={autoPlaying}
+          handleAutoplaying={handleAutoplaying}
+          playButton={playButton}
+        />
       </calcite-action-pad>
     </div>
   );

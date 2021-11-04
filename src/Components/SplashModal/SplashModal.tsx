@@ -2,9 +2,10 @@ import { FC, ReactElement, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import SplashModalT9n from "../../t9n/SplashModal/resources.json";
+
 import { configParamsSelector } from "../../redux/slices/configParamsSlice";
+import { exhibitSelector, updateOpenInfo } from "../../redux/slices/exhibitSlice";
 import { useMessages } from "../../hooks/useMessages";
-import { updateOpenInfo } from "../../redux/slices/exhibitSlice";
 
 interface ContentProps {
   messages: typeof SplashModalT9n;
@@ -33,7 +34,8 @@ const Header: FC<HeaderProps> = ({ splashTitle }): ReactElement => (
 );
 
 const SplashModal: FC = (): ReactElement => {
-  const { splashButtonText, splashTitle, splashContent, splashOnStart, theme } = useSelector(configParamsSelector);
+  const { splashButtonText, splashTitle, splashContent, theme } = useSelector(configParamsSelector);
+  const { openInfo } = useSelector(exhibitSelector)
   const messages: typeof SplashModalT9n = useMessages("Modal");
   const calciteModal = useRef<HTMLCalciteModalElement>(null);
   const dispatch = useDispatch();
@@ -52,7 +54,7 @@ const SplashModal: FC = (): ReactElement => {
       ref={calciteModal}
       class={theme === "light" ? "calcite-theme-light" : "calcite-theme-dark"}
       aria-labelledby="modal-title"
-      active={splashOnStart}
+      active={openInfo}
     >
       <Header splashTitle={splashTitle} />
       <Content messages={messages} splashContent={splashContent} />

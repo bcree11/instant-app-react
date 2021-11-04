@@ -5,32 +5,36 @@ import MapView from "@arcgis/core/views/MapView";
 import MapZoom from "@arcgis/core/widgets/Zoom";
 import Legend from "@arcgis/core/widgets/Legend";
 import Expand from "@arcgis/core/widgets/Expand";
+import Basemap from "@arcgis/core/Basemap";
 import { fromJSON } from "@arcgis/core/geometry/support/jsonUtils";
 
 import ViewT9n from "../../t9n/View/resources.json";
-import { useMessages } from "../../hooks/useMessages";
 
 import "./View.scss";
 
-import { mapSelector } from "../../redux/reducers/map";
-import { configParamsSelector } from "../../redux/slices/configParamsSlice";
-import { ISlide, SlideTransition, WidgetPosition } from "../../types/interfaces";
-import { getGraphic } from "../../utils/utils";
-import Basemap from "@arcgis/core/Basemap";
-import { portalSelector } from "../../redux/slices/portalSlice";
 import ControlPanel from "../ControlPanel/ControlPanel";
 
+import { useMessages } from "../../hooks/useMessages";
+import { mapSelector } from "../../redux/reducers/map";
+import { configParamsSelector } from "../../redux/slices/configParamsSlice";
+import { portalSelector } from "../../redux/slices/portalSlice";
+import { getGraphic } from "../../utils/utils";
+import { ISlide, SlideTransition, WidgetPosition } from "../../types/interfaces";
+
 const CSS = {
-  base: "esri-instant-app__view"
+  base: "esri-instant-app__view",
+  map: "esri-instant-app__view-map",
+  loader: "esri-instant-app__view-loader"
 };
 
 interface ViewProps {
+  isInitialSlide: boolean;
   showView: boolean;
   slide: ISlide;
   transition: SlideTransition;
 }
 
-const View: FC<ViewProps> = ({ showView, slide, transition }): ReactElement => {
+const View: FC<ViewProps> = ({ isInitialSlide, showView, slide, transition }): ReactElement => {
   const map = useSelector(mapSelector);
   const portal = useSelector(portalSelector);
   const {
@@ -51,6 +55,19 @@ const View: FC<ViewProps> = ({ showView, slide, transition }): ReactElement => {
   const initialRotation = useRef<number>(null);
   const initialConstraints = useRef<__esri.MapViewConstraints>(null);
   const [viewReady, setViewReady] = useState<boolean>(false);
+  const handleOpenPopup = useCallback(
+    async (layerId, objectId) => {
+      const graphic = await getGraphic(map.allLayers.toArray(), layerId, objectId);
+      if (graphic) {
+        view.current.popup.open({
+          features: [graphic],
+          location: graphic.geometry
+        });
+      }
+      view.current.popup.autoOpenEnabled = false;
+    },
+    [map.allLayers]
+  );
   const handleExtentSelector = useCallback(
     (layerView?: __esri.FeatureLayerView) => {
       if (extentSelector && extentSelectorConfig) {
@@ -149,6 +166,29 @@ const View: FC<ViewProps> = ({ showView, slide, transition }): ReactElement => {
   }, [handleExtentSelector, map.allLayers.length]);
 
   useEffect(() => {
+    view.current.on("click", (event) => {
+      if (slide.map.includePopup) {
+        view.current.hitTest(event).then((response) => {
+          if (response.results.length) {
+            const graphics: __esri.Graphic[] = [];
+            response.results.forEach((result) => graphics.push(result.graphic));
+            if (slide.map.includePopup) {
+              const graphic = graphics?.[0];
+              const layer = graphic.layer as __esri.FeatureLayer;
+              handleOpenPopup(layer.id, graphic.attributes[layer.objectIdField]);
+            } else {
+              view.current.popup.open({
+                location: event.mapPoint,
+                features: graphics
+              });
+            }
+          }
+        });
+      }
+    });
+  }, [handleOpenPopup, slide.map.includePopup]);
+
+  useEffect(() => {
     if (viewReady) {
       const fade = transition === "fade" ? "0.5" : transition === "slowFade" ? "1.5" : null;
       mapDiv.current.style.zIndex = showView ? "0" : "-1";
@@ -179,17 +219,7 @@ const View: FC<ViewProps> = ({ showView, slide, transition }): ReactElement => {
       if (popup) {
         const { layerId, objectId } = popup;
         if (includePopup && popup && visibleLayers.includes(layerId)) {
-          const handleIncludePopup = async () => {
-            const graphic = await getGraphic(map.allLayers.toArray(), layerId, objectId);
-            if (graphic) {
-              view.current.popup.open({
-                features: [graphic],
-                location: graphic.geometry
-              });
-            }
-            view.current.popup.autoOpenEnabled = false;
-          };
-          handleIncludePopup();
+          handleOpenPopup(layerId, objectId);
         }
       }
 
@@ -208,7 +238,7 @@ const View: FC<ViewProps> = ({ showView, slide, transition }): ReactElement => {
         }
       });
     }
-  }, [slide, map.allLayers, viewReady]);
+  }, [slide, map.allLayers, viewReady, handleOpenPopup]);
 
   useEffect(() => {
     if (slide) {
@@ -373,10 +403,17 @@ const View: FC<ViewProps> = ({ showView, slide, transition }): ReactElement => {
   }
 
   return (
-    <div className={CSS.base} ref={mapDiv}>
-      <div id="mapDescription" ref={mapDescription} className="sr-only"></div>
-      <div id="exhibit-control-panel-widget" ref={controlPanelWidget}>
-        <ControlPanel view={view.current} />
+    <div className={CSS.base}>
+      {isInitialSlide && !viewReady && (
+        <div className={CSS.loader}>
+          <calcite-loader active={!viewReady} type="indeterminate" scale="l" />
+        </div>
+      )}
+      <div className={CSS.map} ref={mapDiv}>
+        <div id="mapDescription" ref={mapDescription} className="sr-only"></div>
+        <div id="exhibit-control-panel-widget" ref={controlPanelWidget}>
+          <ControlPanel slide={slide} view={view.current} />
+        </div>
       </div>
     </div>
   );

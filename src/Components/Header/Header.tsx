@@ -3,10 +3,10 @@ import { useSelector } from "react-redux";
 
 import { configParamsSelector } from "../../redux/slices/configParamsSlice";
 import { portalSelector } from "../../redux/slices/portalSlice";
+import { exhibitSelector } from "../../redux/slices/exhibitSlice";
 import { SharedTheme } from "../../types/interfaces";
 
 import "./Header.scss";
-import { exhibitSelector } from "../../redux/slices/exhibitSlice";
 
 const CSS = {
   base: "esri-instant-app__header",

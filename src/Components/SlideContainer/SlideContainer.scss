@@ -3,4 +3,8 @@
   width: 100%;
   position: relative;
   transition: unset;
+
+  &[data-header="true"] {
+    height: calc(100% - 56px);
+  }
 }

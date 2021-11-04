@@ -3,13 +3,12 @@ import { ExhibitState } from "../../types/interfaces";
 import { RootState } from "../index";
 
 const DEFAULT_STATE: ExhibitState = {
-  prevSlide: null,
   currentSlide: null,
-  nextSlide: null,
   currentSlideIndex: 0,
   slides: [],
   transition: null,
-  openInfo: false
+  openInfo: false,
+  autoPlaying: false
 };
 
 const exhibitSlice = createSlice({
@@ -25,20 +24,19 @@ const exhibitSlice = createSlice({
     increaseCurrentSlideIndex: (state) => {
       if(state.currentSlideIndex === state.slides.length - 1) {
         state.currentSlideIndex = 0;
-        state.prevSlide = null;
         state.currentSlide = state.slides[0];
-        state.nextSlide = state.slides?.[1] ?? null;
       } else if (state.currentSlideIndex < state.slides.length - 1) {
         state.currentSlideIndex++;
         state.currentSlide = state.slides[state.currentSlideIndex];
       }
     },
     updateExhibit: (state, { payload }: PayloadAction<ExhibitState>) => {
-      state.prevSlide = payload.slides?.[state.currentSlideIndex] ?? null;
       state.currentSlide = payload.slides?.[state.currentSlideIndex];
-      state.nextSlide = payload.slides?.[state.currentSlideIndex + 1] ?? null;
       state.transition = payload.transition;
       state = payload;
+    },
+    updateAutoPlaying: (state, { payload }: PayloadAction<boolean>) => {
+      state.autoPlaying = payload;
     },
     updateOpenInfo: (state, { payload }: PayloadAction<boolean>) => {
       state.openInfo = payload;
@@ -49,6 +47,7 @@ const exhibitSlice = createSlice({
 export const {
   decreaseCurrentSlideIndex,
   increaseCurrentSlideIndex,
+  updateAutoPlaying,
   updateExhibit,
   updateOpenInfo
 } = exhibitSlice.actions;

@@ -5,13 +5,13 @@ import Header from "./Components/Header/Header";
 import CoverPage from "./Components/CoverPage/CoverPage";
 import SplashModal from "./Components/SplashModal/SplashModal";
 import Telemetry from "./Components/Telemetry/Telemetry";
+import SlideContainer from "./Components/SlideContainer/SlideContainer";
 
 import { toggleShowMobileMode } from "./redux/slices/mobileSlice";
 import { configParamsSelector } from "./redux/slices/configParamsSlice";
+import { exhibitSelector } from "./redux/slices/exhibitSlice";
 
 import "./App.scss";
-import { exhibitSelector } from "./redux/slices/exhibitSlice";
-import SlideContainer from "./Components/SlideContainer/SlideContainer";
 
 const CSS = {
   body: "esri-instant-app"

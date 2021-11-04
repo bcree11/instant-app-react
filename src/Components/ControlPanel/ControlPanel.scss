@@ -1,9 +1,12 @@
 .esri-control-panel {
-  --calcite-ui-text-3: #fff;
+  &--dark {
+    --calcite-ui-text-3: #fff;
+  }
 
   #control-panel-play-button {
     --calcite-ui-foreground-1: #009AF2;
     --calcite-ui-foreground-2: #007AC2;
+    --calcite-ui-text-3: #fff;
 
     display: flex;
     justify-content: center;

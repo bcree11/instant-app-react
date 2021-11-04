@@ -121,13 +121,12 @@ export interface ICoverPageConfig {
 // Exhibit
 
 export interface ExhibitState {
-  prevSlide?: ISlide;
   currentSlide?: ISlide;
-  nextSlide?: ISlide;
   currentSlideIndex?: number;
   openInfo: boolean;
   slides: ISlide[];
   transition: SlideTransition;
+  autoPlaying: boolean;
 }
 
 export interface ISlide {

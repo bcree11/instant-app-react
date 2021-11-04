@@ -11,30 +11,8 @@
   "googleAnalyticsKey": null,
   "googleAnalyticsConsent": false,
   "googleAnalyticsConsentMsg": null,
-  "extentSelector": true,
-  "extentSelectorConfig": {
-    "constraints": {
-      "geometry": {
-        "spatialReference": {
-          "latestWkid": 3857,
-          "wkid": 102100
-        },
-        "rings": [
-          [
-            [-8998663.759771017, 4794919.089520884],
-            [-8998663.759771017, 5211195.145561813],
-            [-8287799.396719103, 5211195.145561813],
-            [-8287799.396719103, 4794919.089520884],
-            [-8998663.759771017, 4794919.089520884]
-          ]
-        ]
-      },
-      "minScale": 4479471.895197,
-      "maxScale": 0,
-      "rotationEnabled": true
-    },
-    "mapRotation": 0
-  },
+  "extentSelector": false,
+  "extentSelectorConfig": null,
   "header": true,
   "splash": true,
   "splashTitle": "Welcome!",
@@ -130,7 +108,7 @@
         "id": 1634080008393,
         "map": {
           "disableScroll": false,
-          "visibleLayers": ["17a5f482eda-layer-2", "17a5f46b784-layer-1"],
+          "visibleLayers": ["17a5f482eda-layer-2","17a5f46b784-layer-1"],
           "includePopup": true,
           "goTo": {
             "center": [-118.21637253417296, 34.366556138177366],
@@ -164,7 +142,7 @@
         "id": 1634234178993,
         "map": {
           "disableScroll": true,
-          "visibleLayers": ["17a5f482eda-layer-2", "17a5f46b784-layer-1"],
+          "visibleLayers": ["17a5f482eda-layer-2","17a5f46b784-layer-1"],
           "includePopup": false,
           "goTo": {
             "center": [-118.18676694999121, 34.345297602162795],
@@ -194,7 +172,7 @@
         "id": 1634234178994,
         "map": {
           "disableScroll": false,
-          "visibleLayers": ["17a5f482eda-layer-2", "17a5f46b784-layer-1"],
+          "visibleLayers": ["17a5f482eda-layer-2","17a5f46b784-layer-1"],
           "includePopup": false,
           "goTo": {
             "center": [-76.5217423359986, 39.47670791453499],
@@ -224,7 +202,7 @@
         "id": 1634234178995,
         "map": {
           "disableScroll": false,
-          "visibleLayers": ["17a5f482eda-layer-2", "17a5f46b784-layer-1"],
+          "visibleLayers": ["17a5f482eda-layer-2","17a5f46b784-layer-1"],
           "includePopup": false,
           "goTo": {
             "center": [-73.98997037812448, 40.70932723094693],
@@ -254,7 +232,7 @@
         "id": 1634234178996,
         "map": {
           "disableScroll": false,
-          "visibleLayers": ["17a5f482eda-layer-2", "17a5f46b784-layer-1"],
+          "visibleLayers": ["17a5f482eda-layer-2","17a5f46b784-layer-1"],
           "includePopup": false,
           "goTo": {
             "center": [-74.04287292762963, 40.71861012932123],

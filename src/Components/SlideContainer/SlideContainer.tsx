@@ -1,28 +1,27 @@
-import { FC, ReactElement, useEffect } from "react";
+import { FC, ReactElement } from "react";
 import { useSelector } from "react-redux";
 
-import "./SlideContainer.scss";
+import View from "../View/View";
 
 import { exhibitSelector } from "../../redux/slices/exhibitSlice";
-import View from "../View/View";
+import { configParamsSelector } from "../../redux/slices/configParamsSlice";
+
+import "./SlideContainer.scss";
 
 const CSS = {
   base: "esri-slide-container"
 };
 
 const SlideContainer: FC = (): ReactElement => {
-  const { currentSlide, currentSlideIndex, slides, transition } = useSelector(exhibitSelector);
-
-  useEffect(() => {
-    console.log("currentSlideIndex ", currentSlideIndex);
-  }, [currentSlideIndex]);
+  const { header } = useSelector(configParamsSelector)
+  const { currentSlide, slides, transition } = useSelector(exhibitSelector);
 
   return (
-    <div className={CSS.base}>
+    <div className={CSS.base} data-header={header}>
       {slides.length ? (
-        slides.map((slide) => <View key={slide.id} showView={slide.id === currentSlide.id} slide={slide} transition={transition} />)
+        slides.map((slide, index) => <View key={slide.id} isInitialSlide={index === 0} showView={slide.id === currentSlide.id} slide={slide} transition={transition} />)
       ) : (
-        <View key="no-slides" showView={true} slide={null} transition={null} />
+        <View key="no-slides" isInitialSlide={true} showView={true} slide={null} transition={null} />
       )}
     </div>
   );
